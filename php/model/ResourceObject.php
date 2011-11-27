@@ -1,6 +1,6 @@
 <?php
 
-include 'DatabaseRecord.php';
+include_once 'database/DatabaseRecord.php';
 
 class ResourceObject extends DatabaseRecord {
     private $resource;
