@@ -25,7 +25,7 @@ class ResourceManager {
     }
     
     public function validateResourceType($type) {
-        return (DatabaseRecordFactory::createRecord($type) != false);
+        return (DatabaseRecordFactory::factory()->createObject($type) != false);
     }
     
     public function getResourcesCount($type) {

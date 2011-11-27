@@ -15,7 +15,7 @@ class ResourceController {
         $responseType = $_GET['response_type'];
         if (!isset($responseType))
             $responseType = ResourceController::DEFAULT_RESPONSE_TYPE;
-        $this->responseBuilder = ResponseBuilderFactory::responseBuilder($responseType);
+        $this->responseBuilder = ResponseBuilderFactory::factory()->createObject($responseType);
         
         $this->resourceType = $_GET['resource_type'];
         if (!ResourceManager::manager()->validateResourceType($this->resourceType)) {

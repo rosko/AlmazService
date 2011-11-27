@@ -2,21 +2,20 @@
 
 include_once 'controllers/ResourceController.php';
 include_once 'controllers/ResourceControllerFactory.php';
+include_once 'ResponseBuilderFactory.php';
+
+//test URL: /index.php?resource_type=resource&action=get&id=1
 
 $resourceType = $_GET['resource_type'];
 if (isset($resourceType) && strlen($resourceType) > 0)
 {
-    $controller = ResourceControllerFactory::createController($resourceType);
+    $controller = ResourceControllerFactory::factory()->createObject($resourceType);
     $controller->performAction();
 }
 else
 {
 //    ErrorController::showError(405);
 }
-
-// function getAudioResource() {}
-// 
-// $controller = ControllerFactory::createController($type);
 
 /*
 
