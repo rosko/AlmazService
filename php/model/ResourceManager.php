@@ -36,6 +36,22 @@ class ResourceManager {
     }
     
     public function getResources($type, $from, $count) {
+        /*
+        
+        SELECT * FROM ResourceObject as ro
+        INNER JOIN Resource AS r ON r.id = ro.resourceID AND r.type = $resourceTypeID
+        
+        SELECT * FROM Resource AS r
+        INNER JOIN ResourceType AS rt ON r.type = rt.id AND rt.name = $type
+        
+        */
+        
+        
+        /*
+            $finder = ResourceFinder::finder();
+            
+            $resources = $finder->findWithType($type, $from, $count);
+        */
         $finder = DatabaseFinderFactory::finderByType($type);
         if ($finder == false)
             return false;
