@@ -4,6 +4,7 @@ include_once 'database/DatabaseConnection.php';
 include_once 'database/DatabaseRecordFactory.php';
 include_once 'database/DatabaseFinderFactory.php';
 include_once 'database/DatabaseWorker.php';
+include_once 'database/DatabaseRecordFactory.php';
 
 class ResourceManager {
     
@@ -52,10 +53,11 @@ class ResourceManager {
             
             $resources = $finder->findWithType($type, $from, $count);
         */
-        $finder = DatabaseFinderFactory::finderByType($type);
+        $finder = new DatabaseFinder($this->connection);
+//        $finder = DatabaseFinderFactory::finderByType($type);
         if ($finder == false)
             return false;
-        return $finder->findAll($from, $count);
+        return $finder->findAll($type, $from, $count);
     }
     
     public function getResourceById($type, $id) {

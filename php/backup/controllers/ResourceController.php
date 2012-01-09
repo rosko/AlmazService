@@ -77,7 +77,14 @@ class ResourceController {
     public function actionSearch() {
         
     }
-
+    
+    public function actionPut() {
+        
+    }
+    
+    public function actionDelete() {
+        
+    }
 };
 
 ?>

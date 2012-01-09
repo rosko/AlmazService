@@ -1,7 +1,7 @@
 <?php
 
 include_once 'controllers/ResourceController.php';
-include_once 'controllers/ResourceControllerFactory.php';
+include_once 'controllers/ObjectControllerFactory.php';
 include_once 'ResponseBuilderFactory.php';
 
 //test URL: /index.php?resource_type=resource&action=get&id=1
@@ -9,7 +9,7 @@ include_once 'ResponseBuilderFactory.php';
 $resourceType = $_GET['resource_type'];
 if (isset($resourceType) && strlen($resourceType) > 0)
 {
-    $controller = ResourceControllerFactory::factory()->createObject($resourceType);
+    $controller = ObjectControllerFactory::factory()->createObject($resourceType);
     $controller->performAction();
 }
 else

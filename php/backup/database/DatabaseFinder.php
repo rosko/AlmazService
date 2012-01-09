@@ -15,8 +15,8 @@ class DatabaseFinder {
         $query = "SELECT * FROM " . $record->getTable()->getName() . " WHERE id=" . mysql_escape_string($id);
         
         $stmt = new DatabaseStatement($this->connection, $query);
-            
-        if ($stmt->exec() ) {
+        $stmt->exec();
+        if ($stmt->hasResult()) {
             /* Fetch row data and fill record
             */
             $row = $stmt->fetchAssocNextRow();
@@ -30,12 +30,12 @@ class DatabaseFinder {
     
     public function findAll($type, $from, $count) {
         $record = DatabaseRecordFactory::factory()->createObject($type);
-        $query = "SELECT * FROM " . $record->getTable()->getName() . " LIMIT (" . $from . "," . $count . ")";
-        
+        $query = "SELECT * FROM " . $record->getTable()->getName();// . " LIMIT (" . $from . "," . $count . ")";
         $records = array();
         
         $stmt = new DatabaseStatement($this->connection, $query);
-        if ($stmt->exec()) {
+        $stmt->exec();
+        if ($stmt->hasResult()) {
             while ($row = $stmt->fetchAssocNextRow()) {
                 $record = DatabaseRecordFactory::factory()->createObject($type);
                 foreach ($row as $field => $value) {

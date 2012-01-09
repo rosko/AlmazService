@@ -1,0 +1,75 @@
+create database if not exists resource_manager;
+use resource_manager;
+
+create table if not exitst MetaDataKey (
+    id integer primary key auto_increment,
+    key varchar(256) not null
+) default charset=utf8;
+
+create table if not exists ResourceType (
+    id integer primary key auto_increment,
+    name varchar(128) not null,
+    description text
+) default charset=utf8;
+
+create table if not exists ResourceTypeMetas (
+    resource_type_id integer not null,
+    meta_key_id integer not null
+) default charset=utf8;
+
+create table if not exists Resource (
+    id integer primary key auto_increment,
+    type_id integer not null
+) default charset=utf8;
+
+create table if not exists ResourceMetaData (
+    id integer primary key auto_increment,
+    resource_id integer not null,
+    meta_key_id integer not null,
+    meta_value text
+) default charset=utf8;
+
+create table if not exists Object (
+    id integer primary key auto_increment,
+    resource_id integer not null,
+    text_value text
+) default charset=utf8;
+
+create table if not exists ObjectMetaData (
+    id integer primary key auto_increment,
+    object_id integer not null,
+    meta_key_id integer not null,
+    meta_value text
+) default charset=utf8;
+
+create table if not exists ClientApplication (
+    id integer primary key auto_increment,
+    dev_key integer not null
+) default charset=utf8;
+
+create table if not exists AccessRights (
+    id integer primary key auto_increment,
+    resource_id integer not null,
+    client_application_id integer not null,
+    client_right integer not null
+) default charset=utf8;
+
+create table if not exists Users {
+    id integer primary key auto_increment,
+    name varchar(128),
+    email varchar(128),
+    login varchar(128) not null,
+    password varchar(128) not null,
+} default charset=utf8;
+
+create table if not exists Roles {
+    id integer primary key auto_increment,
+    name varchar(256) not null,
+    description text
+} default charset=utf8;
+
+create table if not exists UserRoles {
+    id integer primary key auto_increment,
+    user_id integer not null,
+    role_id integer not null
+} default charset=utf8;
