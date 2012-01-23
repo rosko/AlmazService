@@ -3,102 +3,148 @@
 include_once(dirname(__FILE__).'/../utils/Parameters.php');
 include_once(dirname(__FILE__).'/../utils/ObjectCodingFactory.php');
 
-class ServiceController extends CController {
-    public function actionIndex() {
-        $all_resources = $this->actionGet();
-
-        echo '<h2>Resource</h2>';
-        foreach ($all_resources as $r) {
-            echo $r->id . '-' . $r->type->name.'<br/>';
-            echo 'Metas:<br/>';
-            foreach ($r->meta as $m)
-                echo '<li>'.$m->meta_value . '</li>';
-        }
+class ServiceController {
+    private $model_class_map = array();
+    
+    public function __construct() {
+        $this->model_class_map = array(
+            'class'=>'ResourceType',
+            'object'=>'Object',
+            'meta'=>'MetaDataKey',
+        );
     }
     
-    // Get resource by type
-    // URI:
-    //    by id:    resource/audio/12312.json
-    //    list:     resource/audio/list.json
-    //              resource/audio/list.json?from=recNumber&count=recCount
-    //
-    // Test URI:
-    //    http://localhost/~sshkrabak/test/index.php?rtype=images&rid=list&from=1&count=1
-    //
-    public function actionGet() {
-        if (!Parameters::hasParam('rtype'))
-            die('ServiceController: Invalid resource TYPE (parameter name: \'rtype\')');
+    public function actionIndex() {
+        $entities = array_keys($this->model_class_map);
+        $coder = new CJSON();
         
-        $resource_type = Parameters::get('rtype');
+        $response = $coder->encode($entities);
         
-        if (!Parameters::hasParam('rid'))
-            die('ServiceController: Invalid resource IDENTIFICATOR (parameter name: \'rid\')');
+        echo $response;
+    }
+    
+    public function actionView() {
+        $type = Parameters::get('type');
         
-        $criteria = new CDbCriteria;
-        $criteria->alias = 'r';
-        $criteria->addCondition('name=:resource_type');
-        $criteria->params = array(':resource_type' => $resource_type);
-        
-        if (Parameters::get('rid') == 'list') {
-            // Offset from the beginning of the result recordset
-            if (Parameters::hasParam('from'))
-                $criteria->offset = Parameters::getInt('from');
+        $ar = $this->getActiveRecordClass($type);
+        if (isset($ar))
+        {
+            $id = Parameters::get('id');
+            $result = $ar::model()->findByPk($id);
             
-            // Result records number
-            if (Parameters::hasParam('count'))
-                $criteria->limit = Parameters::getInt('count');
-        } else {
-            $criteria->addCondition('r.id=:resource_id');
-            $criteria->params[':resource_id'] = Parameters::getInt('rid');
-        }
-        
-        $result = Resource::model()->with('type')->findAll($criteria);
-        
-        $format = Parameters::hasParam('format') ? Parameters::get('format') : 'json';
-        $coder = ObjectCodingFactory::factory()->createObject($format);
-        if ($coder != nil) {
-            $response = $coder->encode($result);
+            $coder = new CJSON();
+            
+            $response = $result->encodeWithCoder($coder);
+            //$response = $coder->encode($result);
+            
             echo $response;
         }
-        
-        return $result;
     }
     
-    public function actionPut() {
-        if (!Parameters::hasParam('rtype'))
-            die('ServiceController: Resource type not valid (parameter name: \'rtype\')');
+    public function actionList() {
+        $type = Parameters::get('type');
         
-        if (!Parameters::hasParam('robject', 'POST'))
-            die('ServiceController: Have no object for put (parameter name: \'robject\', method: \'POST\')');
-        
-        $resource_type = Parameters::get('rtype');
-        $resource_object = Parameters::get('robject', 'POST');
-        $response = 'FAIL';
-        
-        $format = Parameters::hasParam('format') ? Parameters::get('format') : 'json';
-        
-        $coder = ObjectCodingFactory::factory()->createObject($format);
-        $resource = $coder->decode($resource_object);
-        if ($resource->save())
-            $response = 'OK';
-        
-        return $response;
+        $active_record = $this->getActiveRecordClass($type);
+        if (isset($active_record))
+        {
+            $result = $active_record::model()->findAll();
+            $response = "";
+            
+            $coder = new CJSON();
+            foreach ($result as $object) {
+                $encoded_object = $object->encodeWithCoder($coder);
+                
+                if (strlen($response) > 1)
+                    $response .= ', ';
+                
+                $response .= $encoded_object;
+            }
+            
+//            $response = $coder->encode($result);
+            
+            echo "[$response]";
+        }
+    }
+    
+    public function actionUpdate() {
+        $type = Parameters::get('type');
+
+        $ar = $this->getActiveRecordClass($type);
+        if (isset($ar)) {
+            echo 'isset($active_record)';
+            
+            $id = Parameters::get('id');
+            $record = $ar::model()->findByPk($id);
+            if (!is_null($record)) {
+                $data = Parameters::getRaw('data', 'POST');
+                
+                $coder = new CJSON();
+                $value = $coder->decode($data, false);
+                
+                foreach ($value as $attr_name => $attr_value) {
+                    if ($record->hasAttribute($attr_name)) {
+                        $record->setAttribute($attr_name, $attr_value);
+                    }
+                }
+                
+                $record->save();
+            }
+        }
+    }
+    
+    public function actionCreate() {
+        $type = Parameters::get('type', 'post');
+
+        $active_record = $this->getActiveRecordClass($type);
+        if (isset($active_record)) {
+            $data = Parameters::getRaw('data', 'post');
+            
+            $coder = new CJSON();
+            $value = $coder->decode($data, false);
+            
+            if (is_null($value)) {
+                echo 'Error: Invalid data'; 
+            }
+            
+            $attrs = get_object_vars($value);
+            
+            $object = new $active_record;
+            foreach ($attrs as $attr_name => $attr_value) {
+                if ($object->hasAttribute($attr_name)) {
+                    $object->setAttribute($attr_name, $attr_value);
+                }
+            }
+            
+            $object->save();
+        } else {
+            echo 'Invalid type';
+        }
     }
     
     public function actionDelete() {
-        if (!Parameters::hasParam('rid'))
-            die('ServiceController: Invalid resource IDENTIFICATOR (parameter name: \'rid\')');
+        if (!Parameters::hasParam('type'))
+            die('TYPE parameter is absent');
+
+        if (!Parameters::hasParam('id'))
+            die('ID parameter is absent');
         
-        $rid = Parameters::get('rid');
-        $response = 'FAIL';
+        $type = Parameters::get('type');
+        $id = Parameters::get('id');
         
-        if (Resource::model()->deleteByPk($rid) == 1)
-            $response = 'OK';
+        $ar = $this->getActiveRecordClass($type);
         
-        return $response;
+        $record = $ar::model()->findByPk($id);
+        if (!isset($record))
+            die("Invalid ID");
+        
+        echo $record->delete();
     }
     
     public function actionSearch() {
-        
+        echo 'SEARCH';
+    }
+    
+    private function getActiveRecordClass($type) {
+        return $this->model_class_map[$type];
     }
 }

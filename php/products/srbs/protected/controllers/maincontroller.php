@@ -12,4 +12,8 @@ class MainController extends CController {
     public function actionAbout() {
         $this->render('about');
     }
+    
+    public function actionResources() {
+        $this->render('resources');
+    }
 }

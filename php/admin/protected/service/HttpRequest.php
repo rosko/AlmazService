@@ -14,7 +14,7 @@ class HttpRequest {
         $this->url = $url;
     }
     
-    public function getUrl($url) {
+    public function getUrl() {
         return $this->url;
     }
     
@@ -30,14 +30,29 @@ class HttpRequest {
         return $this->params[$param_name];
     }
     
+    public function getMethod() {
+        return $this->method;
+    }
+    
+    public function setMethod($method) {
+        $this->method = $method;
+    }
+    
     public function perform() {
         $curl = curl_init();
         
         curl_setopt($curl, CURLOPT_URL, $this->url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         
-        $res = curl_exec($curl);
+        $httpMethod = strtoupper($this->getMethod());
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $httpMethod);
+        if ($httpMethod == 'GET') {
+            // make get params
+        } else {
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $this->params);
+        }
         
+        $res = curl_exec($curl);
         curl_close($curl);
         
         return $res;

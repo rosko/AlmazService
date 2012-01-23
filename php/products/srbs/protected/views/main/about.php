@@ -1,6 +1,6 @@
-	<div id="page1_title"><!-- #page_inform-->
+<div id="page1_title"><!-- #page_inform-->
 			
-		<div id="page1_title_text"><p>Little Story About Our Company</p></div>
+	<div id="page1_title_text"><p>Little Story About Our Company</p></div>
 		
 	<div id="page1_title_img"></div>
 		
@@ -17,15 +17,15 @@
 				<h2>More About Us</h2>
 					
 					<ul>
-						<li><img class="links" src="img/banner_links.gif" alt="marker"><a href='/'>Vision and Mission</a><img class="line" src="img/line.gif" alt="line"></li>
+						<li><img class="links" src="img/banner_links.gif" alt="marker"><a href='/'>Служение</a><img class="line" src="img/line.gif" alt="line"></li>
 															   
-							<li><img class="links" src="img/banner_links.gif" alt="marker"><a href='/'>Company Philisophy</a><img class="line" src="img/line.gif" alt="line"></li>
+							<li><img class="links" src="img/banner_links.gif" alt="marker"><a href='/'>История развития</a><img class="line" src="img/line.gif" alt="line"></li>
 						
-								<li><img class="links" src="img/banner_links.gif" alt="marker"><a href='/'>Company History</a><img class="line" src="img/line.gif" alt="line"></li>
+								<li><img class="links" src="img/banner_links.gif" alt="marker"><a href='/'>Пастор-учитель</a><img class="line" src="img/line.gif" alt="line"></li>
 					
-							<li><img class="links" src="img/banner_links.gif" alt="marker"><a href='/'>Partnership</a><img class="line" src="img/line.gif" alt="line"></li>
+							<li><img class="links" src="img/banner_links.gif" alt="marker"><a href='/'>Свидетельства</a><img class="line" src="img/line.gif" alt="line"></li>
 				
-						<li><img class="links" src="img/banner_links.gif" alt="marker"><a href='/'>Carreer</a><img class="line" src="img/line.gif" alt="line"></li>
+						<li><img class="links" src="img/banner_links.gif" alt="marker"><a href='/'>Еще что то</a><img class="line" src="img/line.gif" alt="line"></li>
 															   
 					</ul>			
 															   

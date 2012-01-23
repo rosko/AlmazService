@@ -17,35 +17,35 @@
 	
 <body>
 	
-	<div id="wrapper">
-		
-		<div id="header"><!-- #header-->
-		
-			<div id="header_top"><div id="logo"><a href="/"><img src="img/logo.png" alt="logo"></a></div><div id="get_quote"><img src="img/get_a_quote.gif" alt="get a quote"></div></div>
-				
-            <?php $this->widget('mainmenu'); ?>
-		
-	</div><!-- #header-->
-
-	<div id="content">
+<div id="wrapper">
 	
-	    <?php echo $content; ?>
-    
-	</div><!-- #content-->
-
-	<div id="footer"><!-- #footer-->
+	<div id="header"><!-- #header-->
 	
-		<div id="footer_top">
-	
-			<div id="footer_img"><img src="img/footer_img.png" alt="footer_img"></div>
-	
-				<div id="footer_copy"><div id="left"><p>Copyright © 2010 Equator. All rights reserved</p></div><div id="right"><p>Back to Top</p><a href="/"><img src="img/pict.png" alt="pict"></a></div></div>
+		<div id="header_top"><div id="logo"><a href="/"><img src="img/logo.png" alt="logo"></a></div><div id="get_quote"><img src="img/get_a_quote.gif" alt="get a quote"></div></div>
 			
-			</div>
+        <?php $this->widget('mainmenu'); ?>
 	
-		<div id="footer_shadows"><img src="img/shadows.png" alt="shadows"></div>
-	
-	</div><!-- #footer -->
+    </div><!-- #header-->
+
+    <div id="content">
+
+        <?php echo $content; ?>
+
+    </div><!-- #content-->
+
+    <div id="footer"><!-- #footer-->
+
+    	<div id="footer_top">
+
+    		<div id="footer_img"><img src="img/footer_img.png" alt="footer_img"></div>
+
+    			<div id="footer_copy"><div id="left"><p>Copyright © 2010 Equator. All rights reserved</p></div><div id="right"><p>Back to Top</p><a href="/"><img src="img/pict.png" alt="pict"></a></div></div>
+		
+    		</div>
+
+    	<div id="footer_shadows"><img src="img/shadows.png" alt="shadows"></div>
+
+    </div><!-- #footer -->
 
     </div><!-- #wrapper -->
 

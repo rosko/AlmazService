@@ -1,25 +1,25 @@
-<h2>Resource Type List</h2>
+<h2 class="section_title">Shema</h2>
 
-<?php 
-echo $this->str; 
+<?php
 
-$dataProvider = new CArrayDataProvider(array(
-    array('title'=>'wer'),
-    array('title'=>'some', 'test'=>'ew'),
-    array('title'=>'423'),
-    array('title'=>'434'),
-));
-
-$this->widget('zii.widgets.grid.CGridView', array(
-    'dataProvider'=>$dataProvider,
-    'columns'=>array(
-        'title',
-        'test',
-        array(
-            'class'=>'CButtonColumn',
-        ),
-    ),
+$this->widget('zii.widgets.CListView', array(
+    'id'=>'Shema_ListView',
+    'dataProvider'=>$shemaDataProvider,
+    'template'=>'{items}',
+    'itemView'=>'EntityItem',
 ));
 
 ?>
 
+<h2 class="section_title">Resource Type</h2>
+
+<?php
+
+$this->widget('zii.widgets.CListView', array(
+    'id'=>'ResourceType_ListView',
+    'dataProvider'=>$resourceDataProvider,
+    'template'=>'{items}',
+    'itemView'=>'EntityItem',
+));
+
+?>

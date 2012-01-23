@@ -1,8 +1,20 @@
 <?php
 
-class Object extends CActiveRecord {
-    public static function model($className == __CLASS__) {
+include_once dirname(__FILE__).'/../core/ICoder.php';
+
+class Object extends CActiveRecord implements ICoder {
+    public static function model($className = __CLASS__) {
         return parent::model($className);
+    }
+    
+    public function encodeWithCoder($coder) {
+        $attrs = $this->getAttributes();
+        return $coder->encode($attrs);
+    }
+    
+    public function decodeWithCoder($coder, $value) {
+        $attrs = $coder->decode($value);
+        $this->setAttributes($attrs);
     }
     
     public function tableName() {

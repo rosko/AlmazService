@@ -1,17 +1,17 @@
 <div id="header_bottom">
 
-<div id="main_middle"><img src="img/logo_home.gif" alt="logo_home"></div>
+<div id="main_middle"><a href="index.php"><img src="img/logo_home.gif" alt="logo_home"></a></div>
 
 <div id="links_middle">
 
 <ul>
-    <li><?php echo CHtml::link('About', array('about')); ?></li>
-    <li><?php echo CHtml::link('Services', array('services')); ?></li>
-    <li><?php echo CHtml::link('Portfolio', array('portfolio')); ?></li>
-    <li><?php echo CHtml::link('FAQ', array('faq')); ?></li>
-    <li><?php echo CHtml::link('Blog', array('blog')); ?></li>
-    <li><?php echo CHtml::link('Contact', array('contact')); ?></li>
-    <li><?php echo CHtml::link('Pages', array('pages')); ?></li>
+    <li><?php echo CHtml::link('Служение', array('about')); ?></li>
+    <li><?php echo CHtml::link('Ресурсы', array('resources')); ?></li>
+    <li><?php echo CHtml::link('Новости', array('portfolio')); ?></li>
+    <li><?php echo CHtml::link('Диски', array('faq')); ?></li>
+    <li><?php echo CHtml::link('Блог', array('blog')); ?></li>
+    <li><?php echo CHtml::link('Контакты', array('contact')); ?></li>
+<!--    <li><?php echo CHtml::link('Pages', array('pages')); ?></li> -->
 </ul>
 
 </div>

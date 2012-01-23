@@ -9,11 +9,22 @@ class Parameters {
         return $_POST;
     }
     
-    public static function get($param_name, $type = 'GET') {
+    public static function getRaw($param_name, $type = 'GET') {
         if ($type == 'GET')
             $arg_val = $_GET[$param_name];
+        else if ($type == 'PUT') {
+            
+            $request = Yii::app()->getRequest();
+            
+            $arg_val = $request->getPut('data');
+        }
         else
             $arg_val = $_POST[$param_name];
+        return $arg_val;
+    }
+    
+    public static function get($param_name, $type = 'GET') {
+        $arg_val = Parameters::getRaw($param_name, $type);
         
         return mysql_escape_string($arg_val);
     }
