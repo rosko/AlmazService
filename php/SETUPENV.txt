@@ -1,0 +1,48 @@
+DATABASE
+------------------------------
+
+Установить MySQL. Запустиь mysql и выполнить скрипу.
+
+source <path_to_the_script_file>
+
+Необходимо создать базу. Скрипт лежит в
+
+php/service/protected/config/database.txt
+
+
+APACHE CONFIGURATION
+------------------------------
+
+MODULES
+
+Необходимо добавить или розкомментировать строку с указанием загрузки библиотеки PHP.
+
+LoadModule php5_module <path_to_php_lib>
+
+VIRTUALHOST
+
+Для тестового использования необходимо настроить виртуальные хосты со следующими именами
+
+<Directory "<path_to_the_resource_service_dir>/../*/">
+    Options Indexes MultiViews FollowSymLinks
+    AllowOverride All
+    Order allow,deny
+    Allow from all
+</Directory>
+
+NameVirtualHost *:80
+
+<VirtualHost *:80>
+    DocumentRoot <path_to_the_resource_service_dir>/php/admin
+    ServerName admin.resourceservice.local
+</VirtualHost>
+
+<VirtualHost *:80>
+    DocumentRoot <path_to_the_resource_service_dir>/php/service
+    ServerName resourceservice.local
+</VirtualHost>
+
+<VirtualHost *:80>
+    DocumentRoot <path_to_the_resource_service_dir>/php/products/srbs
+    ServerName srbs.local
+</VirtualHost>
