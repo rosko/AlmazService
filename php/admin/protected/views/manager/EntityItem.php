@@ -1,4 +1,3 @@
-
 <div style="height:20px;font-size:14px;">
     <?php
         if ($widget->id == 'Shema_ListView')
