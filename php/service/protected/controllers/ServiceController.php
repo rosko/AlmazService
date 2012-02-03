@@ -93,8 +93,8 @@ class ServiceController {
     }
     
     public function actionCreate() {
-        $type = Parameters::get('type', 'post');
-
+        $type = Parameters::get('type');
+        
         $active_record = $this->getActiveRecordClass($type);
         if (isset($active_record)) {
             $data = Parameters::getRaw('data', 'post');

@@ -1,6 +1,8 @@
 <?php
 
-include_once(dirname(__FILE__).'/../service/HttpRequest.php');
+include_once(dirname(__FILE__).'/../../../core/http/HttpRequest.php');
+
+include_once(dirname(__FILE__).'/../../../core/model/Finder/FinderFactory.php');
 
 class RemoteResourceServiceImpl {
     const API_RESOURCE_BASE_URL = '/index.php/api/resource';
@@ -58,29 +60,23 @@ class RemoteResourceServiceImpl {
     }
     
     public function getEntityList($type) {
-        $req = new HttpRequest();
-        $req->setUrl($this->makeEntitiesApiUrl('/'.$type));
+        $finder = FinderFactory::createFinderWithType($type);
+        if ($finder === null)
+            throw Exception('Invalid type');
         
-        $resp = $req->perform();
-//        die($resp);
-        $coder = new CJSON();
+        $list = $finder->findAll();
         
-        // $arr = array(
-        //     "name"=>"test",
-        //     "err"=>array("val","test",),);
-        // 
-        // die($coder->encode($arr));
-        
-        return $coder->decode($resp);
+        return $list;
     }
     
     public function getEntityById($type, $id) {
-        $req = new HttpRequest();
-        $req->setUrl($this->makeEntitiesApiUrl('/'.$type.'/'.$id));
-        $resp = $req->perform();
+        $finder = FinderFactory::createFinderWithType($type);
+        if ($finder === null)
+            throw Exception('Invalid type');
         
-        $coder = new CJSON();
-        return $coder->decode($resp);
+        $object = $finder->findById($id);
+        
+        return $object;
     }
     
     public function saveEntity($type, $values, $id=0) {

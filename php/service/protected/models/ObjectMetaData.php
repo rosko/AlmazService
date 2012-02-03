@@ -3,7 +3,7 @@
 include_once dirname(__FILE__).'/../core/ICoder.php';
 
 class ObjectMetaData extends CActiveRecord implements ICoder {
-    public static function model($className == __CLASS__) {
+    public static function model($className = __CLASS__) {
         return parent::model($className);
     }
     

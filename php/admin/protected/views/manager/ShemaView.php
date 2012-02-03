@@ -5,7 +5,7 @@ $this->widget('zii.widgets.jui.CJuiButton', array(
 	'buttonType'=>'link',
 	'name'=>'add_new',
 	'caption'=>'Add',
-	'url'=>Yii::app()->createUrl("/manager/create", array("type"=>$type,)),
+	'url'=>Yii::app()->createUrl("/manager/showForm", array('type'=>$type)),
 ));
 
 $columns = array();
@@ -13,7 +13,8 @@ $columns = array();
 if (!is_null($dataProvider->rawData)) {
     $data = $dataProvider->data;
     if (count($data) > 0) {
-        foreach ($data[0] as $key => $value) {
+        $attrs = $data[0]->getAttributes();
+        foreach ($attrs as $key => $value) {
             if (is_string($value)) {
                 $columns[] = $key;
             }
@@ -21,9 +22,9 @@ if (!is_null($dataProvider->rawData)) {
     }
     
     if (isset($columns)) {
-        $deleteButtonUrl = 'Yii::app()->createUrl("/manager/delete", array("id"=>$data["id"], "type"=>"'.$type.'"));';
-        $updateButtonUrl = 'Yii::app()->createUrl("/manager/update", array("id"=>$data["id"], "type"=>"'.$type.'"));';
-        
+        $deleteButtonUrl = 'Yii::app()->createUrl("/manager/shemaRemove", array("id"=>$data->id, "type"=>"'.$type.'"));';
+        $updateButtonUrl = 'Yii::app()->createUrl("/manager/showForm", array("id"=>$data->id, "type"=>"'.$type.'"));';
+
         $columns[] = array(
             'class'=>'CButtonColumn', 
             'template'=>'{update}{delete}',
