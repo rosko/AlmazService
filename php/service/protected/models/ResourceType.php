@@ -14,7 +14,7 @@ class ResourceType extends CActiveRecord implements ICoder {
         foreach ($this->metas as $meta) {
             $properties[] = $meta->meta;
         }
-        $attrs['property'] = $properties;//$this->metas;
+        $attrs['property'] = $properties;
         
         return $coder->encode($attrs);
     }

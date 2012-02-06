@@ -13,10 +13,18 @@ class Object extends DataModel
     }
     
     public function getAttributes() {
+        $attr = parent::getAttributes();
         
+        return $attr;
     }
     
     public function setAttributes($attr) {
         
+    }
+    
+    public function getFields() {
+        $fields = parent::getFields();
+//        $fields[] = array('attribute'=>'key_name', 'label'=>'Name', 'type'=>'string');
+        return $fields;
     }
 }

@@ -2,9 +2,10 @@
 
 include_once(dirname(__FILE__).'/../utils/Parameters.php');
 include_once(dirname(__FILE__).'/../utils/ObjectCodingFactory.php');
+include_once(dirname(__FILE__).'/APIResponseCode.php');
 
-class ResourceController {
-
+class ResourceController
+{
     public function actionIndex() {
     }
     
@@ -17,12 +18,12 @@ class ResourceController {
     //
     public function actionView() {
         if (!Parameters::hasParam('type'))
-            die('ServiceController: Invalid resource TYPE (parameter name: \'type\')');
-        
-        $resource_type = Parameters::get('type');
+            throw new APIException('Invalid resource TYPE (parameter name: \'type\')', APIResponseCode::API_INVALID_METHOD_PARAMS);
         
         if (!Parameters::hasParam('id'))
-            die('ServiceController: Invalid resource IDENTIFICATOR (parameter name: \'id\')');
+            throw new APIException('Invalid resource IDENTIFICATOR (parameter name: \'id\')', APIResponseCode::API_INVALID_METHOD_PARAMS);
+        
+        $resource_type = Parameters::get('type');
         
         $criteria = new CDbCriteria;
         $criteria->alias = 'r';
@@ -35,12 +36,11 @@ class ResourceController {
         
         $format = Parameters::hasParam('format') ? Parameters::get('format') : 'json';
         $coder = ObjectCodingFactory::factory()->createObject($format);
-        if ($coder != nil) {
-            $response = $coder->encode($result);
-            echo $response;
-        }
-        
-        return $result;
+        if ($coder === nil)
+            throw new APIException('Invalid Coder for format', APIResponseCode::API_INVALID_CODER);
+            
+        $response = $coder->encode($result);
+        echo $response;
     }
     
     // 
@@ -50,6 +50,9 @@ class ResourceController {
     // format = Response format
     //
     public function actionList() {
+        if (!Parameters::hasParam('type'))
+            throw new APIException('Invalid resource TYPE (parameter name: \'type\')', APIResponseCode::API_INVALID_METHOD_PARAMS);
+        
         $resource_type = Parameters::get('type');
         
         $criteria = new CDbCriteria;
@@ -68,54 +71,45 @@ class ResourceController {
         
         $format = Parameters::hasParam('format') ? Parameters::get('format') : 'json';
         $coder = ObjectCodingFactory::factory()->createObject($format);
-        if ($coder != nil) {
-            $response = $coder->encode($result);
-            echo $response;
-        }
-        
-        return $result;
+        if ($coder === nil)
+            throw new APIException('Invalid Coder for format', APIResponseCode::API_INVALID_CODER);
+            
+        $response = $coder->encode($result);
+        echo $response;
     }
     
     public function actionUpdate() {
+        throw new APIException('Method not implemented', APIResponseCode::API_RESOURCE_UPDATE_ERROR);
     }
     
     public function actionCreate() {
         if (!Parameters::hasParam('type'))
-            die('ResourceController: Resource type not valid (parameter name: \'type\')');
+            throw new APIException('Invalid resource TYPE (parameter name: \'type\')', APIResponseCode::API_INVALID_METHOD_PARAMS);
         
         if (!Parameters::hasParam('data', 'post'))
-            die('ResourceController: Have no object for put (parameter name: \'data\', method: \'POST\')');
+            throw new APIException('Have no object for put (parameter name: \'data\', method: \'POST\')', APIResponseCode::API_INVALID_METHOD_PARAMS);
         
         $resource_type = Parameters::get('type');
         $resource_object = Parameters::get('data', 'post');
-        $response = 'FAIL';
-        
-        $format = Parameters::hasParam('format') ? Parameters::get('format') : 'json';
         
         $resource = new Resource();
         
+        $format = Parameters::hasParam('format') ? Parameters::get('format') : 'json';
         $coder = ObjectCodingFactory::factory()->createObject($format);
-        
-//        $resource = $coder->decode($resource_object);
         $resource->decodeWithCoder($coder);
         
-        if ($resource->save())
-            $response = 'OK';
-        
-        return $response;
+        if (!$resource->save())
+            throw new APIException('Can not save resource object', APIResponseCode::API_RESOURCE_CREATE_ERROR);
     }
     
     public function actionDelete() {
         if (!Parameters::hasParam('id'))
-            die('ServiceController: Invalid resource IDENTIFICATOR (parameter name: \'id\')');
+            throw new APIException('Invalid resource IDENTIFICATOR (parameter name: \'id\')', APIResponseCode::API_INVALID_METHOD_PARAMS);
         
         $id = Parameters::get('id');
-        $response = 'FAIL';
         
-        if (Resource::model()->deleteByPk($id) == 1)
-            $response = 'OK';
-        
-        return $response;
+        if (Resource::model()->deleteByPk($id) !== 1)
+            throw new APIException('Could not delete resource object', APIResponseCode::API_RESOURCE_DELETE_ERROR);
     }
     
     public function actionSearch() {

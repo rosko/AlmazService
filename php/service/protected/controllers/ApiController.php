@@ -2,8 +2,11 @@
 
 include_once(dirname(__FILE__).'/../utils/Parameters.php');
 include_once(dirname(__FILE__).'/../utils/Factory.php');
-include_once('ResourceController.php');
-include_once('ServiceController.php');
+include_once(dirname(__FILE__).'/../utils/ObjectCodingFactory.php');
+include_once(dirname(__FILE__).'/../exception/APIException.php');
+include_once(dirname(__FILE__).'/APIResponseCode.php');
+include_once(dirname(__FILE__).'/ResourceController.php');
+include_once(dirname(__FILE__).'/ServiceController.php');
 
 class ApiControllerFactory extends Factory {
     public function __construct() {
@@ -43,15 +46,22 @@ class ApiController extends CController {
     }
     
     private function dispatchCall($controllerName, $method) {
-        $controller = ApiControllerFactory::factory()->createObject($controllerName);
-        if (is_null($controller) || !isset($controller)) {
-            die('ApiController: invalid controller name.');
-        }
+        $format = Parameters::hasParam('format') ? Parameters::get('format') : 'json';
         
-        if (!method_exists($controller, $method)) {
-            die('ApiController: controller have not the method with specified name.');
+        try
+        {
+            $controller = ApiControllerFactory::factory()->createObject($controllerName);
+            if (is_null($controller) || !isset($controller))
+                throw new APIException('Invalid controller name', APIResponseCode::API_INVALID_CLASSNAME);
+            
+            if (!method_exists($controller, $method))
+                throw new APIException('Controller have not the method with specified name', APIResponseCode::API_INVALID_METHOD);
+            
+            $controller->$method();
         }
-        
-        $controller->$method();
+        catch (APIException $ex)
+        {
+            die($ex->getResponse($format));
+        }
     }
 }
