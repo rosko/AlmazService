@@ -2,7 +2,7 @@
 
 include_once dirname(__FILE__).'/../core/ICoder.php';
 
-class MetaDataKey extends CActiveRecord implements ICoder {
+class MetaDataKey extends CActiveRecord implements ICoder1 {
     public static function model($className = __CLASS__) {
         return parent::model($className);
     }

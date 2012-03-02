@@ -8,17 +8,23 @@ class DataModel
     public $id = DataModel::INVALID_ID;
     
     public function getAttributes() {
-        return array('id'=>$this->id);
+        return get_object_vars($this);
     }
     
     public function setAttributes($attr) {
-        $this->id = $attr['id'];
+        if (is_array($attr)) {
+            foreach ($attr as $property => $value) {
+                if (!is_array($value)) {
+                    $this->{$property} = $value;
+                }
+            }
+        }
     }
     
     public function getFields() {
         return array(
             array(
-                'attribute'=>'id', 'label'=>'ID', 'type'=>'integer',
+                'attribute'=>'id', 'label'=>'ID', 'type'=>'integer', 'readonly'=>true
             ),
         );
     }

@@ -2,7 +2,7 @@
 
 include_once dirname(__FILE__).'/../core/ICoder.php';
 
-class Resource extends CActiveRecord implements ICoder {
+class ARResource extends CActiveRecord implements ICoder1 {
     public static function model($className = __CLASS__) {
         return parent::model($className);
     }
@@ -26,6 +26,7 @@ class Resource extends CActiveRecord implements ICoder {
             'type' => array(self::BELONGS_TO, 'ResourceType', 'type_id'),
             'meta' => array(self::HAS_MANY, 'ResourceMetaData', 'resource_id'),
             'objects' => array(self::HAS_MANY, 'Object', 'resource_id'),
+            'applications' => array(self::HAS_MANY, 'Applications', 'resource_id'),
         );
     }
 }

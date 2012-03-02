@@ -15,26 +15,11 @@ class Property extends DataModel
     /* ResourceTypeMeta description */
     public $descr;
     
-    
-    /* Methods */
-    public function __construct() {
-    }
+    /* Property value */
+    public $value;
     
     public function __toString() {
         return "Property";
-    }
-    
-    public function getAttributes() {
-        $attr = parent::getAttributes();
-        $attr['key_name'] = $this->key_name;
-        $attr['descr'] = $this->descr;
-        return $attr;
-    }
-    
-    public function setAttributes($attr) {
-        parent::setAttributes($attr);
-        $this->key_name = $attr['key_name'];
-        $this->descr = $attr['descr'];
     }
     
     public function getFields() {

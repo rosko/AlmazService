@@ -23,9 +23,9 @@ class RemoteObjectFinder extends RemoteDataFinder
         return true;
     }
     
-    public function createDataObject($object) {
+    public function createDataObject($attr) {
         $object = new Object();
-        $object->setAttributes($object);
+        $object->setAttributes($attr);
         return $object;
     }
 }

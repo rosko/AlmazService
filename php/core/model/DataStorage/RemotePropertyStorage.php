@@ -15,14 +15,6 @@ class RemotePropertyStorage extends RemoteDataStorage
         return $baseUrl.'.json';
     }
     
-    public function decodeResponse($response) {
-        return CoderFactory::createCoder('json')->decode($response);
-    }
-    
-    public function encodeResponse($response) {
-        return CoderFactory::createCoder('json')->encode($response);
-    }
-    
     public function validateResponse($result) {
         return true;
     }

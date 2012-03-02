@@ -1,8 +1,42 @@
 <?php
 
+include_once(dirname(__FILE__).'/APIResponseCode.php');
 include_once(dirname(__FILE__).'/../utils/Parameters.php');
 include_once(dirname(__FILE__).'/../utils/ObjectCodingFactory.php');
-include_once(dirname(__FILE__).'/APIResponseCode.php');
+include_once(dirname(__FILE__).'/../models/DataStorage/YiiClassDataStorage.php');
+include_once(dirname(__FILE__).'/../models/DataStorage/YiiPropertyDataStorage.php');
+include_once(dirname(__FILE__).'/../models/DataStorage/YiiObjectDataStorage.php');
+include_once(dirname(__FILE__).'/../models/DataStorage/YiiResourceDataStorage.php');
+include_once(dirname(__FILE__).'/../models/Finder/YiiDataFinder.php');
+
+include_once(dirname(__FILE__).'/../../../core/model/Class.php');
+include_once(dirname(__FILE__).'/../../../core/model/Property.php');
+include_once(dirname(__FILE__).'/../../../core/model/Object.php');
+include_once(dirname(__FILE__).'/../../../core/model/DataModelFactory.php');
+
+class DataStorageFactory {
+
+    public static function createStorage($type) {
+        if ($type === 'class')
+            return new YiiClassDataStorage ();
+        else if ($type === 'meta')
+            return new YiiPropertyDataStorage();
+        else if ($type === 'object')
+            return new YiiObjectDataStorage();
+        else if ($type === 'resource')
+            return new YiiResourceDataStorage();
+        return null;
+    }
+
+}
+
+class FinderFactory {
+    
+    public static function createFinder($type) {
+        return new YiiDataFinder($type);
+    }
+    
+}
 
 class ServiceController
 {
@@ -11,14 +45,14 @@ class ServiceController
     public function __construct() {
         $this->model_class_map = array(
             'class'=>'ResourceType',
-            'object'=>'Object',
+            'object'=>'CoreObject',
             'meta'=>'MetaDataKey',
         );
     }
     
     /*
-        Return list of the Shemas by type
-    */
+     * Return list of the Shemas by type
+     */
     public function actionIndex() {
         $entities = array_keys($this->model_class_map);
         $coder = new CJSON();
@@ -108,28 +142,18 @@ class ServiceController
         
         $type = Parameters::get('type');
 
-        $ar = $this->getActiveRecordClass($type);
-        if (!isset($ar))
-            throw new APIException('Invalid resource TYPE (parameter name: \'type\')', APIResponseCode::API_INVALID_SHEMA_TYPE);
+        $storage = DataStorageFactory::createStorage($type);
         
-        $id = Parameters::get('id');
+        if (is_null($storage))
+            throw new APIException('Could not create data storage', APIResponseCode::API_INVALID_METHOD_PARAMS);
         
-        $record = $ar::model()->findByPk($id);
-        if (is_null($record))
-            throw new APIException('Invalid ID value', APIResponseCode::API_INVALID_ID);
+        $obj = DataModelFactory::createDataObjectWithType($type);
+        $data = Parameters::getRaw('data', 'post');
         
-        $data = Parameters::getRaw('data', 'POST');
+        $attr = $storage->decodeResponse($data);
+        $obj->setAttributes($attr);
         
-        $coder = new CJSON();
-        $value = $coder->decode($data, false);
-        
-        foreach ($value as $attr_name => $attr_value) {
-            if ($record->hasAttribute($attr_name) && $attr_name !== 'id') {
-                $record->setAttribute($attr_name, $attr_value);
-            }
-        }
-        
-        if (!$record->save())
+        if (!$storage->save($obj))
             throw new APIException('Can not save resource object', APIResponseCode::API_SHEMA_UPDATE_ERROR);
     }
     
@@ -146,29 +170,26 @@ class ServiceController
         
         $type = Parameters::get('type');
         
-        $active_record = $this->getActiveRecordClass($type);
-        if (!isset($active_record))
-            throw new APIException('Invalid resource TYPE (parameter name: \'type\')', APIResponseCode::API_INVALID_SHEMA_TYPE);
+        $storage = DataStorageFactory::createStorage($type);
+
+        if (is_null($storage))
+            throw new APIException('Could not create data storage', APIResponseCode::API_INVALID_METHOD_PARAMS);
         
+        $obj = DataModelFactory::createDataObjectWithType($type);
         $data = Parameters::getRaw('data', 'post');
+
+        $attr = $storage->decodeResponse($data);
         
-        $coder = new CJSON();
-        $value = $coder->decode($data, false);
+        $obj->setAttributes($attr);
         
-        if (is_null($value))
-            throw new APIException('Invalid ID value', APIResponseCode::API_INVALID_ID);
-        
-        $attrs = get_object_vars($value);
-        
-        $object = new $active_record;
-        foreach ($attrs as $attr_name => $attr_value) {
-            if ($object->hasAttribute($attr_name)) {
-                $object->setAttribute($attr_name, $attr_value);
-            }
+        try
+        {
+            $storage->save($obj);
         }
-        
-        if (!$object->save())
-            throw new APIException('Can not save resource object', APIResponseCode::API_SHEMA_DELETE_ERROR);
+        catch (Exception $e)
+        {
+            throw new APIException('Can not save resource object', APIResponseCode::API_SHEMA_CREATE_ERROR);
+        }
     }
     
     /*
@@ -187,6 +208,13 @@ class ServiceController
         
         $type = Parameters::get('type');
         $id = Parameters::get('id');
+        
+        
+//        $finder = FindareFactory::createFinder($type);
+//        $object = $finder->findById($id);
+//         
+//        $storage = DataStorageFactory::createStorage($type);
+//        $storage->remove($object);
         
         $ar = $this->getActiveRecordClass($type);
         

@@ -20,12 +20,7 @@ class ClassName extends DataModel
     public $property = array();
     
     // /* Objects description associated with ResourceType */
-    // private $objects = array();
-    
-    
-    /* Methods */
-    public function __construct() {
-    }
+    public $objects = array();
     
     public function __toString() {
         return $this->description;
@@ -38,9 +33,7 @@ class ClassName extends DataModel
         foreach ($this->property as $property) {
             $props[] = $property->getAttributes();
         }
-        
-        $attr['name'] = $this->name;
-        $attr['descr'] = $this->descr;
+        unset($attr['property']);
         $attr['property'] = $props;
         
         return $attr;
@@ -48,13 +41,10 @@ class ClassName extends DataModel
     
     public function setAttributes($attr) {
         parent::setAttributes($attr);
-        
-        $this->name = $attr['name'];
-        $this->descr = $attr['descr'];
         $props = $attr['property'];
         if (isset($props) && is_array($props)) {
             foreach ($props as $propertyAttr) {
-                $property = new Property();
+                $property = new Property;
                 $property->setAttributes($propertyAttr);
                 $this->property[] = $property;
             }

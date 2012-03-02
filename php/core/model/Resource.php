@@ -6,6 +6,7 @@
 */
 
 require_once(dirname(__FILE__) . '/DataModel.php');
+require_once(dirname(__FILE__) . '/Property.php');
 
 class Resource extends DataModel
 {
@@ -17,6 +18,8 @@ class Resource extends DataModel
     private $modify_date;
     
     private $owner_user;
+    
+    public $type;
     
     /* Property description list associated with ResourceType */
     private $property = array();
@@ -35,16 +38,28 @@ class Resource extends DataModel
     
     public function getAttributes() {
         $attr = parent::getAttributes();
-        $attr['descr'] = $this->descr;
-        $attr['create_date'] = $this->creation_date;
-        $attr['modify_date'] = $this->modify_date;
-        $attr['owner_user'] = $this->owner_user;
+        
+        $props = array();
+        foreach ($this->property as $property) {
+            $props[] = $property->getAttributes();
+        }
+        unset($attr['property']);
+        $attr['property'] = $props;
+        
         return $attr;
     }
     
     public function setAttributes($attr) {
         parent::setAttributes($attr);
-//        $this->descr = $attr['descr'];
+        
+        $props = $attr['property'];
+        if (isset($props) && is_array($props)) {
+            foreach ($props as $propertyAttr) {
+                $property = new Property;
+                $property->setAttributes($propertyAttr);
+                $this->property[] = $property;
+            }
+        }
     }
     
     public function getFields() {
@@ -53,6 +68,7 @@ class Resource extends DataModel
         $fields[] = array('attribute'=>'create_date', 'label'=>'Creation Date', 'type'=>'string');
         $fields[] = array('attribute'=>'modify_date', 'label'=>'Modify Date', 'type'=>'string');
         $fields[] = array('attribute'=>'owner_user', 'label'=>'Owner User', 'type'=>'string');
+        $fields[] = array('attribute'=>'property', 'label'=>'Property', 'type'=>'array');
         return $fields;
     }
 }

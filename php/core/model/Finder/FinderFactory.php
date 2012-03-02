@@ -3,6 +3,7 @@
 require_once(dirname(__FILE__).'/RemoteClassFinder.php');
 require_once(dirname(__FILE__).'/RemotePropertyFinder.php');
 require_once(dirname(__FILE__).'/RemoteObjectFinder.php');
+require_once(dirname(__FILE__).'/RemoteResourceFinder.php');
 
 class FinderFactory
 {
@@ -13,6 +14,8 @@ class FinderFactory
             $finder = FinderFactory::createFinder('RemotePropertyFinder');
         else if ($type == 'object')
             $finder = FinderFactory::createFinder('RemoteObjectFinder');
+        else if ($type === 'resource')
+            $finder = FinderFactory::createFinder ('RemoteResourceFinder');
         else
             $finder = null;
         return $finder;

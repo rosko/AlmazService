@@ -1,5 +1,9 @@
 <?php
 
+include_once(dirname(__FILE__).'/../../../core/model/Resource.php');
+include_once(dirname(__FILE__).'/../../../core/model/DataModelFactory.php');
+include_once(dirname(__FILE__).'/../models/DataStorage/YiiResourceDataStorage.php');
+include_once(dirname(__FILE__).'/../models/Finder/YiiResourceFinder.php');
 include_once(dirname(__FILE__).'/../utils/Parameters.php');
 include_once(dirname(__FILE__).'/../utils/ObjectCodingFactory.php');
 include_once(dirname(__FILE__).'/APIResponseCode.php');
@@ -32,7 +36,7 @@ class ResourceController
         $criteria->addCondition('r.id=:resource_id');
         $criteria->params[':resource_id'] = Parameters::getInt('id');
         
-        $result = Resource::model()->with('type')->findAll($criteria);
+        $result = ARResource::model()->with('type')->findAll($criteria);
         
         $format = Parameters::hasParam('format') ? Parameters::get('format') : 'json';
         $coder = ObjectCodingFactory::factory()->createObject($format);
@@ -53,21 +57,31 @@ class ResourceController
         if (!Parameters::hasParam('type'))
             throw new APIException('Invalid resource TYPE (parameter name: \'type\')', APIResponseCode::API_INVALID_METHOD_PARAMS);
         
+//        if (!Parameters::hasParam('devkey'))
+//            throw new APIException('Invalid application DEVELOPER KEY (parameter name: \'devkey\')', APIResponseCode::API_INVALID_METHOD_PARAMS);
+        
         $resource_type = Parameters::get('type');
+        $devkey = Parameters::get('devkey');
         
-        $criteria = new CDbCriteria;
-        $criteria->alias = 'r';
-        $criteria->addCondition('name=:resource_type');
-        $criteria->params = array(':resource_type' => $resource_type);
+        $finder = new YiiResourceFinder($resource_type);
+//        $finder->setDevKey($devkey);
+        $result = $finder->findAll();
         
-        if (Parameters::hasParam('from'))
-            $criteria->offset = Parameters::getInt('from');
+        $dataSet = array();
+        foreach ($result as $object) {
+            $dataSet[] = $object->getAttributes();
+        }
         
-        // Result records number
-        if (Parameters::hasParam('count'))
-            $criteria->limit = Parameters::getInt('count');
+        $format = Parameters::hasParam('format') ? Parameters::get('format') : 'json';
+        $coder = ObjectCodingFactory::factory()->createObject($format);
+        if ($coder === nil)
+            throw new APIException('Invalid Coder for format', APIResponseCode::API_INVALID_CODER);
+            
+        $response = $coder->encode($dataSet);
+        die($response);
         
-        $result = Resource::model()->with('type')->findAll($criteria);
+        
+
         
         $format = Parameters::hasParam('format') ? Parameters::get('format') : 'json';
         $coder = ObjectCodingFactory::factory()->createObject($format);
@@ -90,8 +104,19 @@ class ResourceController
             throw new APIException('Have no object for put (parameter name: \'data\', method: \'POST\')', APIResponseCode::API_INVALID_METHOD_PARAMS);
         
         $resource_type = Parameters::get('type');
-        $resource_object = Parameters::get('data', 'post');
+        $data = Parameters::get('data', 'post');
         
+        $storage = new YiiResourceDataStorage;
+        $attr = $storage->decodeResponse($data);
+        
+        $object = DataModelFactory::createDataObjectWithType('resource');
+        $object->setAttributes($attr);
+        
+        if (!$storage->save($object))
+            die('Could not save Resource');
+            //new Exception ('Could not save Resource', 0);
+        
+        /*
         $resource = new Resource();
         
         $format = Parameters::hasParam('format') ? Parameters::get('format') : 'json';
@@ -100,6 +125,7 @@ class ResourceController
         
         if (!$resource->save())
             throw new APIException('Can not save resource object', APIResponseCode::API_RESOURCE_CREATE_ERROR);
+         */
     }
     
     public function actionDelete() {

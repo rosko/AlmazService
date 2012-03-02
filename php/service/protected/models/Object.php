@@ -1,8 +1,6 @@
 <?php
 
-include_once dirname(__FILE__).'/../core/ICoder.php';
-
-class Object extends CActiveRecord implements ICoder {
+class CoreObject extends CActiveRecord {
     public static function model($className = __CLASS__) {
         return parent::model($className);
     }

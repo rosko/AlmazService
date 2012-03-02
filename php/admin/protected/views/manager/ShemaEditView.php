@@ -11,35 +11,34 @@
     $fields = $object->getFields();
     $attributes = $object->getAttributes();
     
+    if (isset($attributes['id'])) {
+        echo CHtml::hiddenField('id', $attributes['id']);
+    }
+    
     foreach ($fields as $field) {
-        if ($field['attribute'] === 'id') {
-            echo CHtml::hiddenField('id', $attributes['id']);
-        } else {
-            
-            echo '<div style="padding:10px 10px 10px 10px;height:20px;font-family:verdana;">';
-            
-            echo '<div style="width:150px;height:30px;float:left;">';
-            echo CHtml::label($field['label'].': ', $field['attribute']);
-            echo '</div>';
-            
-            echo '<div style="padding:1px;float:left;background-color:black;">';
-            
-            if ($field['type'] == 'array') {
-                // Draw property
-                $properties = $attributes[$field['attribute']];
-                foreach ($properties as $prop) {
-                    if ($prop['key_name'] !== '')
-                        $props .= $prop['key_name'].';';
-                }
-                
-                echo CHtml::textField($field['attribute'], $props, array('class'=>'tb7'));
-            } else {
-                echo CHtml::textField($field['attribute'], $attributes[$field['attribute']], array('class'=>'tb7'));
+        echo '<div style="padding:10px 10px 10px 10px;height:20px;font-family:verdana;">';
+
+        echo '<div style="width:150px;height:30px;float:left;">';
+        echo CHtml::label($field['label'].': ', $field['attribute']);
+        echo '</div>';
+
+        echo '<div style="padding:1px;float:left;background-color:black;">';
+
+        if ($field['type'] == 'array') {
+            // Draw property
+            $properties = $attributes[$field['attribute']];
+            foreach ($properties as $prop) {
+                if ($prop['key_name'] !== '')
+                    $props .= $prop['key_name'].';';
             }
-            
-            echo '</div>';
-            echo '</div>';
+
+            echo CHtml::textField($field['attribute'], $props, array('class'=>'tb7'));
+        } else {
+            echo CHtml::textField($field['attribute'], $attributes[$field['attribute']], array('class'=>'tb7'));
         }
+
+        echo '</div>';
+        echo '</div>';
     }
     
     echo '<div style="padding:10px;">';

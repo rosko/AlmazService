@@ -5,7 +5,7 @@ $this->widget('zii.widgets.jui.CJuiButton', array(
 	'buttonType'=>'link',
 	'name'=>'add_new',
 	'caption'=>'Add',
-	'url'=>Yii::app()->createUrl("/manager/resourceCreate", array("type"=>$type,"id"=>$id,)),
+	'url'=>Yii::app()->createUrl("/manager/resourceShowForm", array("type"=>$type,"id"=>$id,)),
 ));
 
 $columns = array();

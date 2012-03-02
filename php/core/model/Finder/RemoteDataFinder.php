@@ -1,6 +1,7 @@
 <?php
 
 require_once(dirname(__FILE__).'/AbstractFinder.php');
+require_once(dirname(__FILE__) . '/../../RemoteException.php');
 require_once(dirname(__FILE__) . '/../../http/HttpRequest.php');
 
 abstract class RemoteDataFinder implements AbstractFinder
@@ -18,15 +19,10 @@ abstract class RemoteDataFinder implements AbstractFinder
         $response = $req->perform();
         
         $result = $this->decodeResponse($response);
+        if (isset($result['error']))
+            throw new RemoteException($result['error']);
         
-        $dataSet = array();
-        if ($this->validateResponse($result)) {
-            foreach ($result as $object) {
-                $dataSet[] = $this->createDataObject($object);
-            }
-        }
-        
-        return $dataSet;
+        return $this->createResultDataSet($result);
     }
     
     public function findById($id) {
@@ -34,9 +30,11 @@ abstract class RemoteDataFinder implements AbstractFinder
         
         $url = $this->getMethodUrl(array('id'=>$id));
         $req->setUrl($url);
-        
         $response = $req->perform();
+        
         $result = $this->decodeResponse($response);
+        if (isset($result['error']))
+            throw new RemoteException($result['error']);
         
         $object = nil;
         if ($this->validateResponse($result)) {
@@ -55,9 +53,15 @@ abstract class RemoteDataFinder implements AbstractFinder
         $response = $req->perform();
         
         $result = $this->decodeResponse($response);
+        if (isset($result['error']))
+            throw new RemoteException($result['error']);
         
+        return $this->createResultDataSet($result);
+    }
+    
+    private function createResultDataSet($result) {
         $dataSet = array();
-        if ($this->validateResponse($result)) {
+        if ($this->validateResponse($result) && count($result) > 0) {
             foreach ($result as $object) {
                 $dataSet[] = $this->createDataObject($object);
             }

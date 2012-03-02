@@ -4,19 +4,47 @@
 
 <head>
     
-    <link rel="stylesheet" href="./css/layout.css" type="text/css" media="screen, projection" />
+    <link rel="stylesheet" href="/css/layout.css" type="text/css" media="screen, projection" />
+    
+    <?php echo Yii::app()->bootstrap->registerCss(); ?>
     
 </head>
 
 <body>
-	<div id="wrapper">
+    <div id="wrapper">
     
-    <div id="header">
-        <span id="title">ResourceService Admin Panel</span>
+    <div>
+        <?php
+        
+        $this->widget('bootstrap.widgets.BootNavbar', array(
+            'fixed' => false,
+            'brand' => 'Resource Service',
+            'brandUrl' => '#',
+            'collapse' => true,
+            'items' => array(
+                array(
+                    'class'=>'bootstrap.widgets.BootMenu',
+                    'items'=>array(
+                        array('label'=>'Managament', 'url'=>'index', 'active'=>true),
+                        array('label'=>'Help', 'url'=>'about'),
+                        array('label'=>'About', 'url'=>'about'),
+                    ),
+                ),
+                array(
+                    'class'=>'bootstrap.widgets.BootMenu',
+                    'htmlOptions'=>array('class'=>'pull-right'),
+                    'items'=>array(
+                        array('label'=>'Logout', 'url'=>'logout')
+                    )
+                )
+            ),
+        ));
+        
+        ?>
     </div>
     
-    <div id="content">
-    
+    <div>
+
         <?php echo $content; ?>
         
     </div>

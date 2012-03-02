@@ -36,6 +36,7 @@ create table if not exists ResourceMetaData (
 create table if not exists Object (
     id integer primary key auto_increment,
     resource_id integer,
+    name varchar(255),
     text_value text,
     descr text,
     owner_id integer
@@ -50,14 +51,16 @@ create table if not exists ObjectMetaData (
 
 create table if not exists ClientApplication (
     id integer primary key auto_increment,
-    dev_key integer not null
+    dev_key varchar(32) not null,
+    app_name varchar(128) not null,
+    company varchar(128),
+    descr varchar (255)
 ) default charset=utf8;
 
-create table if not exists AccessRights (
+create table if not exists ApplicationResource (
     id integer primary key auto_increment,
     resource_id integer not null,
-    client_application_id integer not null,
-    client_right integer not null
+    client_application_id integer not null
 ) default charset=utf8;
 
 create table if not exists Users (

@@ -1,13 +1,22 @@
 <?php
 
 require_once(dirname(__FILE__).'/AbstractDataStorage.php');
-require_once(dirname(__FILE__) . '/../../http/HttpRequest.php');
+require_once(dirname(__FILE__).'/../../http/HttpRequest.php');
+require_once(dirname(__FILE__).'/../../transformers/CoderFactory.php');
 
 abstract class RemoteDataStorage implements AbstractDataStorage
 {
     public abstract function getMethodUrl($params = array());
-    public abstract function decodeResponse($response);
+    
     public abstract function validateResponse($result);
+    
+    public function decodeResponse($response) {
+        return CoderFactory::createCoder('json')->decode($response);
+    }
+    
+    public function encodeResponse($array) {
+        return CoderFactory::createCoder('json')->encode($array);
+    }
     
     public function save($object) {
         if ($object->id == 0) {
@@ -44,6 +53,8 @@ abstract class RemoteDataStorage implements AbstractDataStorage
         $req->setParam('data', $data);
         $req->setMethod('POST');
         $response = $req->perform();
+        
+        echo $response;
         
         $result = $this->decodeResponse($response);
         $isValid = $this->validateResponse($result);
