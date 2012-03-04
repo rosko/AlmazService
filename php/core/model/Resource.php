@@ -7,25 +7,26 @@
 
 require_once(dirname(__FILE__) . '/DataModel.php');
 require_once(dirname(__FILE__) . '/Property.php');
+require_once(dirname(__FILE__) . '/Object.php');
 
 class Resource extends DataModel
 {
-    /* ResourceTypeMeta description */
-    private $descr;
+    /* ResourceTypeMeta name */
+    public $name;
     
-    private $create_date;
+    public $create_date;
     
-    private $modify_date;
+    public $modify_date;
     
-    private $owner_user;
+    public $owner_user;
     
     public $type;
     
     /* Property description list associated with ResourceType */
-    private $property = array();
+    public $property = array();
     
     /* Objects description associated with ResourceType */
-    private $objects = array();
+    public $objects = array();
     
     
     /* Methods */
@@ -39,12 +40,21 @@ class Resource extends DataModel
     public function getAttributes() {
         $attr = parent::getAttributes();
         
+        // Add properties attributes
         $props = array();
         foreach ($this->property as $property) {
             $props[] = $property->getAttributes();
         }
         unset($attr['property']);
         $attr['property'] = $props;
+        
+        //Add object attributes
+        $objects = array();
+        foreach ($this->objects as $object) {
+            $objects[] = $object->getAttributes();
+        }
+        unset($attr['objects']);
+        $attr['objects'] = $objects;
         
         return $attr;
     }
@@ -60,15 +70,25 @@ class Resource extends DataModel
                 $this->property[] = $property;
             }
         }
+        
+        $objects = $attr['objects'];
+        if (isset($objects) && is_array($objects)) {
+            foreach ($objects as $objectAttr) {
+                $obj = new Object;
+                $obj->setAttributes($objectAttr);
+                $this->objects[] = $obj;
+            }
+        }
     }
     
     public function getFields() {
         $fields = parent::getFields();
-        $fields[] = array('attribute'=>'descr', 'label'=>'Description', 'type'=>'string');
-        $fields[] = array('attribute'=>'create_date', 'label'=>'Creation Date', 'type'=>'string');
-        $fields[] = array('attribute'=>'modify_date', 'label'=>'Modify Date', 'type'=>'string');
-        $fields[] = array('attribute'=>'owner_user', 'label'=>'Owner User', 'type'=>'string');
+        $fields[] = array('attribute'=>'name', 'label'=>'Name', 'type'=>'string');
+        $fields[] = array('attribute'=>'create_date', 'label'=>'Creation Date', 'type'=>'string', 'readonly'=>true);
+        $fields[] = array('attribute'=>'modify_date', 'label'=>'Modify Date', 'type'=>'string', 'readonly'=>true);
+        $fields[] = array('attribute'=>'owner_user', 'label'=>'Owner User', 'type'=>'string', 'readonly'=>true);
         $fields[] = array('attribute'=>'property', 'label'=>'Property', 'type'=>'array');
+        $fields[] = array('attribute'=>'objects', 'label'=>'Object', 'type'=>'array');
         return $fields;
     }
 }

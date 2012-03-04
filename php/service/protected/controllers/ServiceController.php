@@ -8,7 +8,6 @@ include_once(dirname(__FILE__).'/../models/DataStorage/YiiPropertyDataStorage.ph
 include_once(dirname(__FILE__).'/../models/DataStorage/YiiObjectDataStorage.php');
 include_once(dirname(__FILE__).'/../models/DataStorage/YiiResourceDataStorage.php');
 include_once(dirname(__FILE__).'/../models/Finder/YiiDataFinder.php');
-
 include_once(dirname(__FILE__).'/../../../core/model/Class.php');
 include_once(dirname(__FILE__).'/../../../core/model/Property.php');
 include_once(dirname(__FILE__).'/../../../core/model/Object.php');
@@ -147,14 +146,20 @@ class ServiceController
         if (is_null($storage))
             throw new APIException('Could not create data storage', APIResponseCode::API_INVALID_METHOD_PARAMS);
         
-        $obj = DataModelFactory::createDataObjectWithType($type);
-        $data = Parameters::getRaw('data', 'post');
-        
-        $attr = $storage->decodeResponse($data);
-        $obj->setAttributes($attr);
-        
-        if (!$storage->save($obj))
+        try
+        {
+            $obj = DataModelFactory::createDataObjectWithType($type);
+            $data = Parameters::getRaw('data', 'post');
+
+            $attr = $storage->decodeResponse($data);
+            $obj->setAttributes($attr);
+            
+            $storage->save($obj);
+        }
+        catch (Exception $e)
+        {
             throw new APIException('Can not save resource object', APIResponseCode::API_SHEMA_UPDATE_ERROR);
+        }
     }
     
     /*
@@ -175,15 +180,15 @@ class ServiceController
         if (is_null($storage))
             throw new APIException('Could not create data storage', APIResponseCode::API_INVALID_METHOD_PARAMS);
         
-        $obj = DataModelFactory::createDataObjectWithType($type);
-        $data = Parameters::getRaw('data', 'post');
-
-        $attr = $storage->decodeResponse($data);
-        
-        $obj->setAttributes($attr);
-        
         try
         {
+            $obj = DataModelFactory::createDataObjectWithType($type);
+            $data = Parameters::getRaw('data', 'post');
+
+            $attr = $storage->decodeResponse($data);
+
+            $obj->setAttributes($attr);
+        
             $storage->save($obj);
         }
         catch (Exception $e)

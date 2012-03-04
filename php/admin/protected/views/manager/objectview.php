@@ -72,7 +72,7 @@ echo CHtml::hiddenField('shema', $shema);
             echo "<div class=\"control-group\" id=\"$parent_id\">";
             echo "<label class=\"control-label\" for=\"$id\">$title</label>";
             echo "<div class=\"controls\">";
-            echo "<input type=\"hidden\" value=\"property[$idx][key_name]\">";
+            echo "<input type=\"hidden\" name=\"property[$idx][key_name]\" value=\"$title\">";
             echo "<input type=\"text\" class=\"input-xlarge\" id=\"$id\" value=\"$value\" name=\"property[$idx][value]\">";
             echo "&nbsp";
             echo "<button class=\"btn\" style=\"width:70px;\" onclick=\"js:$($parent_id).remove();\">Remove</button>";
@@ -89,7 +89,7 @@ echo CHtml::hiddenField('shema', $shema);
         <div class="controls">
             <?php 
             $list = array();
-            foreach ($property as $prop) {
+            foreach ($propertyList as $prop) {
                 $prop_name = 'property_'.str_replace('-', '_', $prop->key_name);
                 $list[$prop_name] = $prop->key_name;
             }

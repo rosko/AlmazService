@@ -7,6 +7,16 @@ class CoreObject extends CActiveRecord {
     
     public function encodeWithCoder($coder) {
         $attrs = $this->getAttributes();
+        
+        $properties = array();
+        foreach ($this->metas as $meta) {
+            $property = $meta->meta->getAttributes();
+            $property['value'] = $meta->meta_value;
+            $properties[] = $property;
+            
+        }
+        $attrs['property'] = $properties;
+        
         return $coder->encode($attrs);
     }
     
@@ -15,6 +25,7 @@ class CoreObject extends CActiveRecord {
         $this->setAttributes($attrs);
     }
     
+    
     public function tableName() {
         return 'Object';
     }
@@ -22,6 +33,7 @@ class CoreObject extends CActiveRecord {
     public function relations() {
         return array(
             'resource' => array(self::BELONGS_TO, 'Resource', 'resource_id'),
+            'metas' => array(self::HAS_MANY, 'ObjectMetaData', 'object_id'),
         );
     }
 }

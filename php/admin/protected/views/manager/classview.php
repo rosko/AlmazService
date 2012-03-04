@@ -97,20 +97,7 @@
     var last_index = document.getElementById("prop-fields").children.length - 1;
     
     $("#btnAdd").click(function() {
-        /*
-         * Add new class property field with HTML next sturcture:
-         * 
-         * <div class="control-group" id="prototype">
-         *    <label class="control-label" for=""></label>
-         *    <div class="controls">
-         *        <input type="text" class="input-xlarge" id="" value="">
-         *        <button class="btn" id="btnRmv">Remove</button>
-         *    </div>
-         * </div>
-         */
-        
         var prop_id = "property_" + last_index;
-        
         var prop = $("#prototype").clone().attr("id", "parent_" + prop_id);
         
         prop.children(".controls").children("input").attr("id", prop_id);
@@ -118,7 +105,6 @@
         prop.children(".controls").children("button").attr("onclick", "js:$(parent_"+prop_id+").remove();");
         prop.children("label").attr("for", prop_id).text("Property name");
         prop.appendTo($("#prop-fields"));
-       
         prop.show();
         
         last_index++

@@ -24,7 +24,7 @@ class ObjectMetaData extends CActiveRecord implements ICoder1 {
     public function relations() {
         return array(
             'object' => array(self::BELONGS_TO, 'Object', 'object_id'),
-            'metadata' => array(self::BELONGS_TO, 'MetaDataKey', 'meta_key_id'),
+            'meta' => array(self::BELONGS_TO, 'MetaDataKey', 'meta_key_id'),
         );
     }
 }

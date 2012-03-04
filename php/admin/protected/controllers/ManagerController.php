@@ -55,13 +55,15 @@ class ManagerController extends CController
                 'id'=>$class->id,
                 'name'=>$class->name,
             );
+            if ($resource == $class->name)
+                $resourceClass = $class;
         }
         
         $resourceDataProvider = new CArrayDataProvider($class_name_list);
         
         // Fetch resources by resource class name
-        if (is_null($resource))
-            $resource = $resourceDataProvider->rawData[0]['name'];
+        if (!isset($resourceClass) || is_null($resourceClass))
+            $resourceClass = $class_list[0];
         
         try {
             $finder = FinderFactory::createFinderWithType('resource');
@@ -80,7 +82,7 @@ class ManagerController extends CController
         $this->render('resources', array(
             'resourceDataProvider'=>$resourceDataProvider,
             'dataProvider'=>$dataProvider,
-            'resource'=>$resource
+            'resource'=>$resourceClass
         ));
     }
     
@@ -94,8 +96,18 @@ class ManagerController extends CController
     
     ////////////////////////////////////////////////////////////////////////
     
-    public function actionAddResource() {
-        die('AddResource');
+    public function actionAddResource($type = null, $id = null) {
+        $finder = FinderFactory::createFinderWithType('class');
+        $class = $finder->findById($id);
+        
+        $resource = new Resource;
+        
+        $this->setActiveTab('Resources');
+        $this->render('resourceview', array(
+            'type' => $type,
+            'class' => $class,
+            'resource' => $resource
+        ));
     }
     
     /**
@@ -116,7 +128,7 @@ class ManagerController extends CController
         
         if ($shema === 'object') {
             $finder = FinderFactory::createFinderWithType('meta');
-            $params['property'] = $finder->findAll();
+            $params['propertyList'] = $finder->findAll();
         }
         
         $this->render($shema.'view', $params);
@@ -159,87 +171,11 @@ class ManagerController extends CController
     }
     
     //////////////////////////////////////////////////////////////////////////////
-    
-    public function actionEntity($type) {
-        if (!isset($type))
-            die('Type is invalid');
+    public function actionSaveResourceObject() {
         
-        $service = new ResourceService('resourceservice.local');
-        $objects = $service->getEntityList($type);
-        $dataProvider = new CArrayDataProvider($objects);
-        
-        $this->render('ShemaView', array(
-            'dataProvider'=>$dataProvider,
-            'type'=>$type,
-        ));
     }
     
-    ////////////////////////////////////////////////
-    
-    public function actionShowForm($type, $id) {
-        if (!isset($type))
-            die('Error: Invalid type');
-        
-        if (isset($id)) {
-            $finder = FinderFactory::createFinderWithType($type);
-            $object = $finder->findById($id);
-        } else {
-            $object = DataModelFactory::createDataObjectWithType($type);
-        }
-        
-        $this->render('ShemaEditView', array(
-            'type'=>$type,
-            'object'=>$object,
-        ));
-    }
-    
-    public function actionShemaSave($type, $id) {
-        $object = DataModelFactory::createDataObjectWithType($type);
-        
-        if ($object !== null) {
-            $attrs = $_GET;
-            if (isset($attrs['property']) && is_string($attrs['property'])) {
-                $props_keys = explode(';', $attrs['property']);
-                foreach ($props_keys as $keys) {
-                    if (isset($keys) && $keys !== '') {
-                        $one_prop['key_name'] = $keys;
-                        $props[] = $one_prop;
-                    }
-                }
-            }
-            
-            $attrs['property'] = $props;
-            
-            $object->setAttributes($attrs);
-            
-            $storage = DataStorageFactory::createDataStorageWithType($type);
-            $storage->save($object);
-        }
-        
-        $this->redirect(Yii::app()->createUrl('manager/entity', array('type'=>$type)));
-    }
-    
-    public function actionShemaRemove($type, $id) {
-        if (!isset($id) || !isset($type))
-            die('Error: Invalid ID or TYPE');
-        
-        if ($type === null)
-            die('Invalid ShemaObject TYPE');
-        
-        if ($id === null)
-            die('Invalid ShemaObject ID');
-        
-        $finder = FinderFactory::createFinderWithType($type);
-        $object = $finder->findById($id);
-
-        if ($object !== null) {
-            $storage = DataStorageFactory::createDataStorageWithType($type);
-            $storage->remove($object);
-        }
-    }
-    
-    ////////////////////////////////////////////////
-    
+    //////////////////////////////////////////////////////////////////////////////
     public function actionResource($type, $id) {
         try {
             $finder = FinderFactory::createFinderWithType('resource');

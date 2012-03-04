@@ -13,10 +13,8 @@ class YiiClassDataStorage implements AbstractDataStorage
         
         $keys = array_keys($propNames);
         foreach ($resourceType->metas as $resourceTypeMeta) {
-            if (!isset($keys[$resourceTypeMeta->meta->key_name])) {
+            if (!isset($keys[$resourceTypeMeta->meta->key_name]))
                 ResourceTypeMetas::model()->deleteByPk($resourceTypeMeta->id);
-            }
-            
             unset($keys[$resourceTypeMeta->meta->key_name]);
         }
         
@@ -65,10 +63,8 @@ class YiiClassDataStorage implements AbstractDataStorage
         catch (Exception $e)
         {
             $transaction->rollback();
-            return false;
+            throw $e;
         }
-        
-        return true;
     }
     
     public function remove($object) {

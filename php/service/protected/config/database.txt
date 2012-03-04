@@ -23,7 +23,8 @@ create table if not exists Resource (
     type_id integer not null,
     owner_id integer,
     create_date integer,
-    update_date integer
+    update_date integer,
+    name varchar(128) not null
 ) default charset=utf8;
 
 create table if not exists ResourceMetaData (

@@ -20,7 +20,7 @@
             foreach ($resourceDataProvider->rawData as $resourceItem) {
                 $name = $resourceItem['name'];
                 $item = array('label'=>$name, 'url'=>'resources?resource='.$name, 'icon'=>'file');
-                if ($name === $resource)
+                if ($name === $resource->name)
                     $item['active'] = true;
                 $items[] = $item;
             }
@@ -66,7 +66,7 @@
             
             <div>
                 
-                <div class="pull-left"><h3><?php echo strtoupper($resource[0]).substr($resource, 1); ?> resources</h3></div>
+                <div class="pull-left"><h3><?php echo strtoupper($resource->name[0]).substr($resource->name, 1); ?> resources</h3></div>
                 
                 <div>
                 
@@ -78,7 +78,7 @@
                         'htmlOptions'=>array('class'=>'pull-right'),
                         'stacked'=>false,
                         'items'=>array(
-                            array('label'=>'New '.$resource, 'url'=>'addResource?type='.$resource, 'active'=>true),
+                            array('label'=>'New '.$resource->name, 'url'=>'addResource?type='.$resource->name.'&id='.$resource->id, 'active'=>true),
                         ),
                     ));
 

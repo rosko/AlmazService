@@ -54,8 +54,6 @@ abstract class RemoteDataStorage implements AbstractDataStorage
         $req->setMethod('POST');
         $response = $req->perform();
         
-        echo $response;
-        
         $result = $this->decodeResponse($response);
         $isValid = $this->validateResponse($result);
         
