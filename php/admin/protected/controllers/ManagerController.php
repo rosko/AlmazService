@@ -1,6 +1,7 @@
 <?php
 
 include_once(dirname(__FILE__).'/../service/ResourceService.php');
+include_once(dirname(__FILE__).'/../service/FileUploader.php');
 include_once(dirname(__FILE__).'/../../../core/model/Finder/FinderFactory.php');
 include_once(dirname(__FILE__).'/../../../core/model/DataStorage/DataStorageFactory.php');
 include_once(dirname(__FILE__).'/../../../core/model/DataModelFactory.php');
@@ -160,7 +161,10 @@ class ManagerController extends CController
         
         $attr = $_POST;
         $type = $attr['shema'];
-        
+
+        if (FileUploader::hasFile('xfile'))
+            $attr['text_value'] = FileUploader::uploadFile('xfile');
+
         $object = DataModelFactory::createDataObjectWithType($type);
         $object->setAttributes($attr);
         
@@ -193,7 +197,7 @@ class ManagerController extends CController
     public function actionSaveResourceObject() {
         $attr = $_POST;
         $type = $attr['type'];
-        
+
         $object = DataModelFactory::createDataObjectWithType('resource');
         $object->setAttributes($attr);
         

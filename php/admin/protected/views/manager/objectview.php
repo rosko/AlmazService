@@ -4,7 +4,8 @@ echo Yii::app()->bootstrap->registerCss();
 $form = $this->beginWidget('bootstrap.widgets.BootActiveForm', array(
     'id'=>'horizontalForm',
     'type'=>'horizontal',
-    'action'=>'saveShemaObject'
+    'action'=>'saveShemaObject',
+    'htmlOptions'=>array('enctype'=>'multipart/form-data')
 ));
 
 echo CHtml::hiddenField('shema', $shema);
@@ -38,9 +39,15 @@ echo CHtml::hiddenField('shema', $shema);
             else
             {
                 if ($field['type'] === 'string')
+                {
                     echo '<input type="text" class="input-xlarge" id="'.$field_id.'" name="'.$field_id.'" value="'.$value.'">';
+                }
                 else
+                {
                     echo "<textarea rows=5 class=input-xlarge id=$field_id name=$field_id>$value</textarea>";
+                    echo "<br/>";
+                    echo CHtml::fileField("xfile", "", array('id'=>'btnFile', 'style'=>'color:black;'));
+                }
             }
 
             echo '</div>';
@@ -136,4 +143,10 @@ echo CHtml::hiddenField('shema', $shema);
         
         last_index++;
     });
+
+    $("#btnFile").change(function() {
+        var filename = this.value.split('/').pop().split('\\').pop();
+        $("#text_value").val(filename);
+    });
+
 </script>

@@ -1,10 +1,10 @@
 <?php
 
 include_once(dirname(__FILE__).'/../../../core/http/HttpRequest.php');
-
 include_once(dirname(__FILE__).'/../../../core/model/Finder/FinderFactory.php');
 
-class RemoteResourceServiceImpl {
+class RemoteResourceServiceImpl
+{
     const API_RESOURCE_BASE_URL = '/index.php/api/resource';
     const API_ENTITY_BASE_URL = '/index.php/api/service';
     
@@ -124,6 +124,18 @@ class RemoteResourceServiceImpl {
         
         die($resp);
     }
+
+    public function uploadFile($filePath, $fileName) {
+        $url = $this->makeUploadApiUrl('/');
+        
+        $req = new HttpRequest();
+        $req->setUrl($url);
+        $req->setParam('xfile', "@".$filePath);
+        $req->setParam('xfilename', $fileName);
+        $req->setMethod('POST');
+
+        return $req->perform();
+    }
     
     // ---------------------------------------------------------------------------
     //
@@ -133,6 +145,10 @@ class RemoteResourceServiceImpl {
     
     private function makeResourceApiUrl($api) {
         return $this->service_url . RemoteResourceServiceImpl::API_RESOURCE_BASE_URL . $api . '.' . $this->format;
+    }
+
+    private function makeUploadApiUrl($api) {
+        return $this->service_url . '/upload';
     }
     
     private function makeEntitiesApiUrl($api) {
