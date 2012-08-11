@@ -17,13 +17,13 @@ class YiiResourceFinder extends YiiDataFinder
     
     public function prepareObjectAttributes($record) {
         $property = array();
-        foreach ($record->meta as $meta) {
+        foreach ($record->metas as $meta) {
             //
             // NEED TO REFACTORED
             //
-            $prop_attr['key_name'] = $meta->metadata->key_name;
+            $prop_attr['key_name'] = $meta->meta->key_name;
             $prop_attr['value'] = $meta->meta_value;
-            $prop_attr['descr'] = $meta->metadata->descr;
+            $prop_attr['descr'] = $meta->meta->descr;
             $prop_attr['id'] = $meta->id;
             //
             // ====
@@ -54,11 +54,8 @@ class YiiResourceFinder extends YiiDataFinder
      */
     public function findAllInDatabase() {
         $criteria = new CDbCriteria;
-        $criteria->alias = 'r';
-        $criteria->addCondition('name=:resource_type');
+        $criteria->addCondition('type.name=:resource_type');
         $criteria->params = array(':resource_type' => $this->type);
-        
-        $conditions = array($criteria);
         
         if (is_null($this->devkey) || !isset($this->devkey)) {
             $criteria2 = $criteria;
@@ -76,6 +73,6 @@ class YiiResourceFinder extends YiiDataFinder
             );
         }
         
-        return ARResource::model()->with('type')->findAll($criteria2);
+        return ARResource::model()->with('type')->findAll($criteria);
     }
 }

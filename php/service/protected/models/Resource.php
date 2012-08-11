@@ -24,7 +24,7 @@ class ARResource extends CActiveRecord implements ICoder1 {
     public function relations() {
         return array(
             'type' => array(self::BELONGS_TO, 'ResourceType', 'type_id'),
-            'meta' => array(self::HAS_MANY, 'ResourceMetaData', 'resource_id'),
+            'metas' => array(self::HAS_MANY, 'ResourceMetaData', 'resource_id'),
             'objects' => array(self::HAS_MANY, 'Object', 'resource_id'),
             'applications' => array(self::HAS_MANY, 'Applications', 'resource_id'),
         );

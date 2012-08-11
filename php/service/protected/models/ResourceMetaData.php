@@ -24,7 +24,7 @@ class ResourceMetaData extends CActiveRecord implements ICoder1 {
     public function relations() {
         return array(
             'resource' => array(self::BELONGS_TO, 'Resource', 'resource_id'),
-            'metadata' => array(self::BELONGS_TO, 'MetaDataKey', 'meta_key_id'),
+            'meta' => array(self::BELONGS_TO, 'MetaDataKey', 'meta_key_id'),
         );
     }
 }

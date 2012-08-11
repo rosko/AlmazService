@@ -72,8 +72,20 @@ class YiiObjectDataStorage implements AbstractDataStorage
     }
     
     public function remove($object) {
-        if (CoreObject::mode()->deleteByPk($object->id) == false)
-            throw new Exception('Could not remove object');
+        $transaction = CoreObject::mode()->getDbConnection()->beginTransaction();
+        
+        try
+        {
+            if (CoreObject::mode()->deleteByPk($object->id) == false)
+                throw new Exception('Could not remove object');
+            
+            ObjectMetaData::model()->deleteAll('object_id=:objid', array('objid'=>$object->id));
+        }
+        catch (Exception $e)
+        {
+            $transaction->rollback();
+            throw $e;
+        }
     }
     
     public function decodeResponse($data) {

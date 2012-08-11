@@ -5,6 +5,7 @@ return array(
     'defaultController' => 'main',
     
     'import' => array (
-        'application.components.*'
+        'application.components.*',
+        'application.widgets.*'
     ),
 );

@@ -53,10 +53,15 @@
                 }
 
                 if (isset($columns)) {
+                    $deleteButtonUrl = 'Yii::app()->createUrl("/manager/removeResourceObject", array("id"=>$data->id, "type"=>"'.$resource->name.'"));';
+                    $updateButtonUrl = 'Yii::app()->createUrl("/manager/viewResourceObject", array("id"=>$data->id, "type"=>"'.$resource->name.'"));';
+                    
                     $columns[] = array(
                         'class'=>'bootstrap.widgets.BootButtonColumn', 
                         'template'=>'{update}{delete}',
                         'htmlOptions'=>array('style'=>'width: 30px'),
+                        'deleteButtonUrl'=>$deleteButtonUrl,
+                        'updateButtonUrl'=>$updateButtonUrl
                     );
                 }
             } else {

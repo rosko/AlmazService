@@ -37,6 +37,13 @@ class Resource extends DataModel
         return $this->descr;
     }
     
+    public function getPropertyByName($name) {
+        foreach ($this->property as $property) {
+            if ($property->key_name == $name)
+                return $property;
+        }
+    }
+    
     public function getAttributes() {
         $attr = parent::getAttributes();
         

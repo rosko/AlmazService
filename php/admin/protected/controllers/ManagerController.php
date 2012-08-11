@@ -171,11 +171,6 @@ class ManagerController extends CController
     }
     
     //////////////////////////////////////////////////////////////////////////////
-    public function actionSaveResourceObject() {
-        
-    }
-    
-    //////////////////////////////////////////////////////////////////////////////
     public function actionResource($type, $id) {
         try {
             $finder = FinderFactory::createFinderWithType('resource');
@@ -195,48 +190,37 @@ class ManagerController extends CController
         }
     }
     
-    public function actionResourceShowForm($type, $id) {
-        try {
-            $finder = FinderFactory::createFinderWithType('class');
-            $class = $finder->findById($id);
-            
-            $this->render('ResourceView', array(
-                'type'=>$type,
-                'object'=>$class,
-            ));
-        } catch (Exception $e) {
-            die($e->getMessage());
-        }
-    }
-    
-    public function actionResourceSave($type, $id) {
-        $property = array();
+    public function actionSaveResourceObject() {
+        $attr = $_POST;
+        $type = $attr['type'];
         
-        $prefix = 'property_';
-        $prefixLen = strlen($prefix);
-        foreach ($_GET as $name => $value) {
-            if (strstr($name, $prefix) == $name) {
-                $propName = substr($name, $prefixLen);
-                $property[] = array('key_name'=>$propName, 'value'=>$value);
-            }
-        }
-        
-        $attr = $_GET;
-        $attr['property'] = $property;
-        $attr['id'] =  0;
-        
-        $resource = new Resource;
-        $resource->setAttributes($attr);
+        $object = DataModelFactory::createDataObjectWithType('resource');
+        $object->setAttributes($attr);
         
         $storage = DataStorageFactory::createDataStorageWithType('resource');
         $storage->setType($type);
+        $storage->save($object);
         
-        $storage->save($resource);
-        
-        $this->redirect(Yii::app()->createUrl('manager/resource', array('type'=>$type, 'id'=>$id,)));
+        $this->redirect(Yii::app()->createUrl('manager/resources', array('resource'=>$type)));
     }
     
-    public function actionResourceRemove() {
+    
+    public function actionRemoveResourceObject($type = null, $id = null) {
+        $finder = FinderFactory::createFinderWithType('resource');
+        $finder->setType($type);
+        
+        $object = $finder->findById($id);
+        
+        if ($object !== null) {
+            $storage = DataStorageFactory::createDataStorageWithType('resource');
+            $storage->setType($type);
+            $storage->remove($object);
+        }
+        
+        $this->redirect(Yii::app()->createUrl('manager/resources', array('resource'=>$type)));
+    }
+    
+    public function actionViewResourceObject() {
         
     }
 }

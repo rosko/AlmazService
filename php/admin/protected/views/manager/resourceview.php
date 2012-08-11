@@ -1,3 +1,4 @@
+
 <?php
 echo Yii::app()->bootstrap->registerCss();
 
@@ -7,7 +8,7 @@ $form = $this->beginWidget('bootstrap.widgets.BootActiveForm', array(
     'action'=>'saveResourceObject'
 ));
 
-//echo CHtml::hiddenField('shema', $type);
+echo CHtml::hiddenField('type', $type);
 
 ?>
 
