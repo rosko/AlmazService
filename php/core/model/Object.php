@@ -41,8 +41,8 @@ class Object extends DataModel
     public function setAttributes($attr) {
         parent::setAttributes($attr);
         
-        $props = $attr['property'];
-        if (isset($props) && is_array($props)) {
+        if (isset($attr['property']) && is_array($attr['property'])) {
+            $props = $attr['property'];
             foreach ($props as $propertyAttr) {
                 $property = new Property();
                 $property->setAttributes($propertyAttr);

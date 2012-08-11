@@ -42,6 +42,24 @@ class YiiResourceDataStorage implements AbstractDataStorage
                 throw new Exception('Could not save ObjectProperty');
         }
     }
+
+    private function synchronizeOjbects($resource, $objects) {
+
+        ResourceObject::model()->deleteAll('resource_id = :id', array('id' => $resource->id));
+
+        $order = 0;
+        foreach ($objects as $object) {
+
+            $resourceObject = new ResourceObject;
+            $resourceObject->resource_id = $resource->id;
+            $resourceObject->object_id = $object->id;
+            $resourceObject->order = $order++;
+            if (!$resourceObject->save())
+                throw new Exception('Could not save ResourceObject');
+
+        }
+
+    }
     
     public function save($object) {
         $model = ARResource::model();
@@ -69,12 +87,13 @@ class YiiResourceDataStorage implements AbstractDataStorage
             $resource->type_id = $class->id;
             $resource->name = $object->name;
             $resource->update_date = time();
-            
+
             if (!$resource->save()) {
                 throw new Exception('Could not save RESOURCE_TYPE');
             }
-            
+
             $this->synchronizeProperties($resource, $object->property);
+            $this->synchronizeOjbects($resource, $object->objects);
             
             $transaction->commit();
         }

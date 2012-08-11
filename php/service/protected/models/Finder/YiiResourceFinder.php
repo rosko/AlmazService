@@ -32,10 +32,22 @@ class YiiResourceFinder extends YiiDataFinder
             $prop->setAttributes($prop_attr);
             $property[] = $prop->getAttributes();
         }
-        
+
+
+        $objects = array();
+
+        foreach ($record->objects as $object) {
+            $objects[] = array(
+                'name' => $object->name,
+                'text_value' => $object->text_value,
+                'descr' => $object->descr,
+                'id' => $object->id,
+            );
+        }
         $attr = $record->getAttributes();
         $attr['type'] = $record->type->name;
         $attr['property'] = $property;
+        $attr['objects'] = $objects;
         
         return $attr;
     }

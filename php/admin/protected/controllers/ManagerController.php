@@ -28,7 +28,7 @@ class ManagerController extends CController
     public function actionShema($shema = null) {
         $service = new ResourceService('resourceservice.local');
         $shemaDataProvider = new CArrayDataProvider($service->getEntityTypeList());
-        
+
         if (is_null($shema))
             $shema = $shemaDataProvider->rawData[0];
 
@@ -101,12 +101,16 @@ class ManagerController extends CController
         $class = $finder->findById($id);
         
         $resource = new Resource;
-        
+
+        $finder = FinderFactory::createFinderWithType('object');
+        $objects = $finder->findAll();
+
         $this->setActiveTab('Resources');
-        $this->render('resourceview', array(
+        $this->render('resourceadd', array(
             'type' => $type,
             'class' => $class,
-            'resource' => $resource
+            'resource' => $resource,
+            'objects' => $objects,
         ));
     }
     
@@ -160,13 +164,13 @@ class ManagerController extends CController
         
         $attr = $_POST;
         $type = $attr['shema'];
-        
+
         $object = DataModelFactory::createDataObjectWithType($type);
         $object->setAttributes($attr);
         
         $storage = DataStorageFactory::createDataStorageWithType($type);
         $storage->save($object);
-        
+
         $this->redirect(Yii::app()->createUrl('manager/shema', array('shema'=>$type)));
     }
     
@@ -193,10 +197,10 @@ class ManagerController extends CController
     public function actionSaveResourceObject() {
         $attr = $_POST;
         $type = $attr['type'];
-        
+
         $object = DataModelFactory::createDataObjectWithType('resource');
         $object->setAttributes($attr);
-        
+
         $storage = DataStorageFactory::createDataStorageWithType('resource');
         $storage->setType($type);
         $storage->save($object);
@@ -220,7 +224,25 @@ class ManagerController extends CController
         $this->redirect(Yii::app()->createUrl('manager/resources', array('resource'=>$type)));
     }
     
-    public function actionViewResourceObject() {
-        
+    public function actionViewResourceObject($id, $type, $type_id) {
+
+        $finder = FinderFactory::createFinderWithType('class');
+        $class = $finder->findById(intval($type_id));
+
+        $finder = FinderFactory::createFinderWithType('resource');
+        $finder->setType($type);
+        $resource = $finder->findById(intval($id));
+
+        $finder = FinderFactory::createFinderWithType('object');
+        $objects = $finder->findAll();
+
+        $this->setActiveTab('Resources');
+        $this->render('resourceview', array(
+                   'type' => $type,
+                   'class' => $class,
+                   'resource' => $resource,
+                   'objects' => $objects,
+         ));
+
     }
 }

@@ -10,6 +10,6 @@ class CoderFactory
             return new JsonCoder();
         else if ($coderType == 'xml')
             return new XmlCoder();
-        return nil;
+        return null;
     }
 }

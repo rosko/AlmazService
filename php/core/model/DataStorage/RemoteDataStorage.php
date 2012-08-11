@@ -68,7 +68,7 @@ abstract class RemoteDataStorage implements AbstractDataStorage
         $data = $this->encodeResponse($attr);
         
         $url = $this->getMethodUrl(array('id'=>$object->id));
-        
+
         $req = new HttpRequest();
         $req->setUrl($url);
         $req->setParam('data', $data);
