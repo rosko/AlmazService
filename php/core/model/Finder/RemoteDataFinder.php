@@ -36,7 +36,7 @@ abstract class RemoteDataFinder implements AbstractFinder
         if (isset($result['error']))
             throw new RemoteException($result['error']);
         
-        $object = nil;
+        $object = null;
         if ($this->validateResponse($result)) {
             $object = $this->createDataObject($result);
         }

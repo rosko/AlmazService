@@ -68,18 +68,18 @@ class Resource extends DataModel
     
     public function setAttributes($attr) {
         parent::setAttributes($attr);
-        
-        $props = $attr['property'];
-        if (isset($props) && is_array($props)) {
+
+        if (isset($attr['property']) && is_array($attr['property'])) {
+            $props = $attr['property'];
             foreach ($props as $propertyAttr) {
                 $property = new Property;
                 $property->setAttributes($propertyAttr);
                 $this->property[] = $property;
             }
         }
-        
-        $objects = $attr['objects'];
-        if (isset($objects) && is_array($objects)) {
+
+        if (isset($attr['objects']) && is_array($attr['objects'])) {
+            $objects = $attr['objects'];
             foreach ($objects as $objectAttr) {
                 $obj = new Object;
                 $obj->setAttributes($objectAttr);

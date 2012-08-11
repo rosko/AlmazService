@@ -30,13 +30,13 @@ class ResourceController
             throw new APIException('Invalid resource IDENTIFICATOR (parameter name: \'id\')', APIResponseCode::API_INVALID_METHOD_PARAMS);
         
         $resource_type = Parameters::get('type');
-        
+
         $finder = new YiiResourceFinder($resource_type);
         $object = $finder->findById(Parameters::get('id'));
-        
+
         $format = Parameters::hasParam('format') ? Parameters::get('format') : 'json';
         $coder = ObjectCodingFactory::factory()->createObject($format);
-        if ($coder === nil)
+        if ($coder === null)
             throw new APIException('Invalid Coder for format', APIResponseCode::API_INVALID_CODER);
             
         $response = $coder->encode($object->getAttributes());
@@ -58,7 +58,7 @@ class ResourceController
         
         $resource_type = Parameters::get('type');
         $devkey = Parameters::get('devkey');
-        
+
         $finder = new YiiResourceFinder($resource_type);
 //        $finder->setDevKey($devkey);
         $result = $finder->findAll();
@@ -70,22 +70,22 @@ class ResourceController
         
         $format = Parameters::hasParam('format') ? Parameters::get('format') : 'json';
         $coder = ObjectCodingFactory::factory()->createObject($format);
-        if ($coder === nil)
+        if ($coder === null)
             throw new APIException('Invalid Coder for format', APIResponseCode::API_INVALID_CODER);
             
         $response = $coder->encode($dataSet);
         die($response);
-        
-        
-
-        
-        $format = Parameters::hasParam('format') ? Parameters::get('format') : 'json';
-        $coder = ObjectCodingFactory::factory()->createObject($format);
-        if ($coder === nil)
-            throw new APIException('Invalid Coder for format', APIResponseCode::API_INVALID_CODER);
-            
-        $response = $coder->encode($result);
-        echo $response;
+//
+//
+//
+//
+//        $format = Parameters::hasParam('format') ? Parameters::get('format') : 'json';
+//        $coder = ObjectCodingFactory::factory()->createObject($format);
+//        if ($coder === null)
+//            throw new APIException('Invalid Coder for format', APIResponseCode::API_INVALID_CODER);
+//
+//        $response = $coder->encode($result);
+//        echo $response;
     }
     
     public function actionUpdate() {

@@ -1,3 +1,4 @@
+
 <?php
 Yii::app()->clientScript->registerPackage('jquery.ui');
 
@@ -14,7 +15,7 @@ echo CHtml::hiddenField('type', $type);
 ?>
 
 <fieldset>
-    <legend>Edit <?php echo $type; ?> resource</legend>
+    <legend>New <?php echo $type; ?> resource</legend>
 
     <?php
         $fields = $resource->getFields();
@@ -58,7 +59,7 @@ echo CHtml::hiddenField('type', $type);
         
         $idx = 0;
         
-        foreach ($resource->property as $property) {
+        foreach ($class->property as $property) {
             $id = 'property_'.$idx;
             $parent_id = 'parent_'.$id;
             
@@ -67,7 +68,6 @@ echo CHtml::hiddenField('type', $type);
             echo "<div class=\"controls\">";
             echo "<input type=\"hidden\" name=\"property[$idx][key_name]\" value=\"$property->key_name\">";
             echo "<input type=\"text\" class=\"input-xlarge\" id=\"$id\" value=\"$property->value\" name=\"property[$idx][value]\">";
-            echo "<p class='help-block'>$property->descr</p>";
             echo "</div>";
             echo "</div>";
             
@@ -78,7 +78,7 @@ echo CHtml::hiddenField('type', $type);
     </div>
     
    <legend>Objects</legend>
-
+   
    <div id="obj-fields">
 
        <div class="control-group" id="prototype">
@@ -91,17 +91,15 @@ echo CHtml::hiddenField('type', $type);
 
        <?php foreach ($attributes['objects'] as $obj) { ?>
 
-           <div class="control-group">
-               <div class="controls">
-                   <input type="hidden" class="object_id" name="objects[][id]" value="<?php echo $obj['id']; ?>">
-                   <span class="title"><?php echo $obj['name']; ?></span>
-                   <button class="btn obj-remove" style="width:70px;">Remove</button>
-               </div>
+       <div class="control-group">
+           <div class="controls">
+               <input type="hidden" class="object_id" name="objects[][id]" value="<?php echo $obj['id']; ?>">
+               <span class="title"><?php echo $obj['name']; ?></span>
+               <button class="btn obj-remove" style="width:70px;">Remove</button>
            </div>
+       </div>
 
-        <?php }  ?>
-
-
+       <?php }  ?>
 
    </div>
     
@@ -115,7 +113,7 @@ echo CHtml::hiddenField('type', $type);
 
             echo CHtml::dropDownList('resource_object', '', $list);
             ?>
-            
+
             <?php echo CHtml::button('Add', array('class'=>'btn btn-success', 'id'=>'btnAdd', 'style'=>'width:70px;')); ?>
         </div>
     </div>
@@ -127,6 +125,7 @@ echo CHtml::hiddenField('type', $type);
 </div>
 
 <?php $this->endWidget(); ?>
+
 
 <script type="text/javascript" language="javascript">
     $("#prototype").hide();

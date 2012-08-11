@@ -54,7 +54,7 @@
 
                 if (isset($columns)) {
                     $deleteButtonUrl = 'Yii::app()->createUrl("/manager/removeResourceObject", array("id"=>$data->id, "type"=>"'.$resource->name.'"));';
-                    $updateButtonUrl = 'Yii::app()->createUrl("/manager/viewResourceObject", array("id"=>$data->id, "type"=>"'.$resource->name.'"));';
+                    $updateButtonUrl = 'Yii::app()->createUrl("/manager/viewResourceObject", array("id"=>$data->id, "type"=>"'.$resource->name.'", "type_id" => "'.$resource->id.'"));';
                     
                     $columns[] = array(
                         'class'=>'bootstrap.widgets.BootButtonColumn', 

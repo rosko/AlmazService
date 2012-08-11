@@ -42,7 +42,7 @@ class YiiDataFinder implements AbstractFinder
     
     public function findById($id) {
         $record = $this->model->findByPk($id);
-        
+
         $attr = $this->prepareObjectAttributes($record);
         $object = $this->createDataObject($attr);
         

@@ -44,3 +44,19 @@ body {
 	margin-bottom:0px;
 	width:400px;
 }
+
+#obj-fields .control-group {
+    width: 600px;
+    padding: 6px 3px 3px 3px;
+    cursor: pointer;
+    border: 1px solid white;
+    margin: 10px;
+}
+
+#obj-fields .control-group:hover {
+    border: 1px solid #ddd;
+}
+
+#obj-fields .control-group .btn {
+    float: right;
+}
