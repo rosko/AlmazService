@@ -1,44 +1,53 @@
 <?php
 
-class HttpRequest {
-    
+class HttpRequest
+{
     private $url = null;
     private $params = array();
     private $method = null;
     
-    public function __construct() {
+    public function __construct()
+    {
         $this->method = 'GET';
     }
     
-    public function setUrl($url) {
+    public function setUrl($url)
+    {
         $this->url = $url;
     }
     
-    public function getUrl() {
+    public function getUrl()
+    {
         return $this->url;
     }
     
-    public function setParams($params) {
+    public function setParams($params)
+    {
         $this->params = $params;
     }
     
-    public function setParam($param_name, $param_value) {
+    public function setParam($param_name, $param_value)
+    {
         $this->params[$param_name] = $param_value;
     }
     
-    public function getParam($param_name) {
+    public function getParam($param_name)
+    {
         return $this->params[$param_name];
     }
     
-    public function getMethod() {
+    public function getMethod()
+    {
         return $this->method;
     }
     
-    public function setMethod($method) {
+    public function setMethod($method)
+    {
         $this->method = $method;
     }
     
-    public function perform() {
+    public function perform()
+    {
         $curl = curl_init();
         
         curl_setopt($curl, CURLOPT_URL, $this->url);

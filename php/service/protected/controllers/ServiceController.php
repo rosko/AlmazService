@@ -13,8 +13,8 @@ include_once(dirname(__FILE__).'/../../../core/model/Property.php');
 include_once(dirname(__FILE__).'/../../../core/model/Object.php');
 include_once(dirname(__FILE__).'/../../../core/model/DataModelFactory.php');
 
-class DataStorageFactory {
-
+class DataStorageFactory
+{
     public static function createStorage($type) {
         if ($type === 'class')
             return new YiiClassDataStorage ();
@@ -26,15 +26,13 @@ class DataStorageFactory {
             return new YiiResourceDataStorage();
         return null;
     }
-
 }
 
-class FinderFactory {
-    
+class FinderFactory
+{
     public static function createFinder($type) {
         return new YiiDataFinder($type);
     }
-    
 }
 
 class ServiceController
@@ -186,9 +184,8 @@ class ServiceController
             $data = Parameters::getRaw('data', 'post');
 
             $attr = $storage->decodeResponse($data);
-
             $obj->setAttributes($attr);
-        
+            
             $storage->save($obj);
         }
         catch (Exception $e)
@@ -213,13 +210,6 @@ class ServiceController
         
         $type = Parameters::get('type');
         $id = Parameters::get('id');
-        
-        
-//        $finder = FindareFactory::createFinder($type);
-//        $object = $finder->findById($id);
-//         
-//        $storage = DataStorageFactory::createStorage($type);
-//        $storage->remove($object);
         
         $ar = $this->getActiveRecordClass($type);
         

@@ -8,6 +8,7 @@
             
             // TODO: delete me
             echo Yii::app()->bootstrap->registerCss();
+            Yii::app()->getController()->setActiveTab("Resources");
             
             /* 
              * Draw left sidebar with resource types. User can select one of the type

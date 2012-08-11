@@ -17,7 +17,7 @@ class ManagerController extends CController
         return $this->selectedTab;
     }
     
-    private function setActiveTab($tabLabel) {
+    public function setActiveTab($tabLabel) {
         $this->selectedTab = $tabLabel;
     }
     
@@ -35,8 +35,6 @@ class ManagerController extends CController
 
         $dataProvider = new CArrayDataProvider($service->getEntityList($shema),
                 array('pagination'=>array('pageSize'=>20)));
-        
-        $this->setActiveTab('Shema');
         
         $this->render('index', array(
             'shemaDataProvider'=>$shemaDataProvider,
@@ -79,7 +77,6 @@ class ManagerController extends CController
         }
         
         // Render resource view
-        $this->setActiveTab('Resources');
         $this->render('resources', array(
             'resourceDataProvider'=>$resourceDataProvider,
             'dataProvider'=>$dataProvider,
@@ -88,11 +85,17 @@ class ManagerController extends CController
     }
     
     public function actionUser() {
-        die('UserPage NotImplemented');
+        $service = new ResourceService('resourceservice.local');
+
+        $this->render('users', array(
+        ));
     }
     
     public function actionClient() {
-        die('ClientPage NotImplemented');
+        $service = new ResourceService('resourceservice.local');
+
+        $this->render('apps', array(
+        ));
     }
     
     ////////////////////////////////////////////////////////////////////////
@@ -106,7 +109,6 @@ class ManagerController extends CController
         $finder = FinderFactory::createFinderWithType('object');
         $objects = $finder->findAll();
 
-        $this->setActiveTab('Resources');
         $this->render('resourceadd', array(
             'type' => $type,
             'class' => $class,
@@ -239,8 +241,7 @@ class ManagerController extends CController
 
         $finder = FinderFactory::createFinderWithType('object');
         $objects = $finder->findAll();
-
-        $this->setActiveTab('Resources');
+        
         $this->render('resourceview', array(
                    'type' => $type,
                    'class' => $class,

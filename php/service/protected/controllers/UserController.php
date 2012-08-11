@@ -10,7 +10,6 @@ class UserController
     }
     
     public function actionList() {
-        
     }
     
     public function actionCreate() {

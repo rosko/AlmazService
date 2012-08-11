@@ -1,4 +1,6 @@
-<?php echo Yii::app()->bootstrap->registerCss(); ?>
+<?php
+echo Yii::app()->bootstrap->registerCss();
+?>
 
 <?php $form = $this->beginWidget('bootstrap.widgets.BootActiveForm', array(
     'id'=>'horizontalForm',
