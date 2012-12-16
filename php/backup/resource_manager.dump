@@ -73,9 +73,11 @@ DROP TABLE IF EXISTS `ClientApplication`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `ClientApplication` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `dev_key` varchar(32) NOT NULL,
-  `app_name` varchar(128) NOT NULL,
+  `devkey` varchar(32) NOT NULL,
+  `name` varchar(128) NOT NULL,
   `company` varchar(128) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `weblink` varchar(255) DEFAULT NULL,
   `descr` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

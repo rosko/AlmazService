@@ -39,7 +39,8 @@ class ServiceController
 {
     private $model_class_map = array();
     
-    public function __construct() {
+    public function __construct()
+    {
         $this->model_class_map = array(
             'class'=>'ResourceType',
             'object'=>'CoreObject',
@@ -50,11 +51,14 @@ class ServiceController
     /*
      * Return list of the Shemas by type
      */
-    public function actionIndex() {
+    public function actionIndex()
+    {
         $entities = array_keys($this->model_class_map);
         $coder = new CJSON();
         
         $response = $coder->encode($entities);
+
+        Yii::trace($response);
         
         echo $response;
     }
@@ -66,7 +70,8 @@ class ServiceController
         
         @return - Formatted plain text response
     */
-    public function actionView() {
+    public function actionView()
+    {
         if (!Parameters::hasParam('type'))
             throw new APIException('Invalid resource TYPE (parameter name: \'type\')', APIResponseCode::API_INVALID_METHOD_PARAMS);
         
@@ -97,7 +102,8 @@ class ServiceController
         
         @return - Formatted plain text response
     */
-    public function actionList() {
+    public function actionList()
+    {
         if (!Parameters::hasParam('type'))
             throw new APIException('Invalid resource TYPE (parameter name: \'type\')', APIResponseCode::API_INVALID_METHOD_PARAMS);
         
@@ -113,13 +119,13 @@ class ServiceController
         $coder = new CJSON();
         foreach ($result as $object) {
             $encoded_object = $object->encodeWithCoder($coder);
-            
+
             if (strlen($response) > 1)
                 $response .= ', ';
-            
+
             $response .= $encoded_object;
         }
-        
+
         echo "[$response]";
     }
     
@@ -130,7 +136,8 @@ class ServiceController
         
         @return - Formatted plain text response
     */
-    public function actionUpdate() {
+    public function actionUpdate()
+    {
         if (!Parameters::hasParam('type'))
             throw new APIException('Invalid resource TYPE (parameter name: \'type\')', APIResponseCode::API_INVALID_METHOD_PARAMS);
         
@@ -167,7 +174,8 @@ class ServiceController
         
         @return - Formatted plain text response
     */
-    public function actionCreate() {
+    public function actionCreate()
+    {
         if (!Parameters::hasParam('type'))
             throw new APIException('Invalid resource TYPE (parameter name: \'type\')', APIResponseCode::API_INVALID_METHOD_PARAMS);
         
@@ -201,7 +209,8 @@ class ServiceController
         
         @return - Formatted plain text response
     */
-    public function actionDelete() {
+    public function actionDelete()
+    {
         if (!Parameters::hasParam('type'))
             throw new APIException('Invalid resource TYPE (parameter name: \'type\')', APIResponseCode::API_INVALID_METHOD_PARAMS);
         
@@ -221,11 +230,13 @@ class ServiceController
             throw new APIException('Could not delete resource object', APIResponseCode::API_SHEMA_DELETE_ERROR);
     }
     
-    public function actionSearch() {
+    public function actionSearch()
+    {
         echo 'SEARCH';
     }
     
-    private function getActiveRecordClass($type) {
+    private function getActiveRecordClass($type)
+    {
         return $this->model_class_map[$type];
     }
 }

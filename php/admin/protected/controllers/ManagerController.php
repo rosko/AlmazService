@@ -1,10 +1,11 @@
 <?php
 
-include_once(dirname(__FILE__).'/../service/ResourceService.php');
-include_once(dirname(__FILE__).'/../service/FileUploader.php');
-include_once(dirname(__FILE__).'/../../../core/model/Finder/FinderFactory.php');
-include_once(dirname(__FILE__).'/../../../core/model/DataStorage/DataStorageFactory.php');
-include_once(dirname(__FILE__).'/../../../core/model/DataModelFactory.php');
+include_once(__SRC_DIR__.'/service/ResourceService.php');
+include_once(__SRC_DIR__.'/service/FileUploader.php');
+include_once(__CORE_DIR__.'/model/Finder/FinderFactory.php');
+include_once(__CORE_DIR__.'/model/DataStorage/DataStorageFactory.php');
+include_once(__CORE_DIR__.'/model/DataModelFactory.php');
+include_once(__CORE_DIR__.'/model/User.php');
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -12,7 +13,7 @@ class ManagerController extends CController
 {
     public $layout = 'manager';
     public $selectedTab = 'Shema';
-    
+
     public function getActiveTab() {
         return $this->selectedTab;
     }
@@ -21,7 +22,6 @@ class ManagerController extends CController
         $this->selectedTab = $tabLabel;
     }
     
-    
     public function actionIndex() {
         $this->redirect(Yii::app()->createUrl('manager/shema'));
     }
@@ -29,13 +29,13 @@ class ManagerController extends CController
     public function actionShema($shema = null) {
         $service = new ResourceService('resourceservice.local');
         $shemaDataProvider = new CArrayDataProvider($service->getEntityTypeList());
-
+        
         if (is_null($shema))
             $shema = $shemaDataProvider->rawData[0];
-
+        
         $dataProvider = new CArrayDataProvider($service->getEntityList($shema),
                 array('pagination'=>array('pageSize'=>20)));
-        
+
         $this->render('index', array(
             'shemaDataProvider'=>$shemaDataProvider,
             'shema'=>$shema,
@@ -83,18 +83,44 @@ class ManagerController extends CController
             'resource'=>$resourceClass
         ));
     }
+
+    ////////////////////////////////////////////////////////////////////////
     
     public function actionUser() {
         $service = new ResourceService('resourceservice.local');
 
+        $list = $service->getUserList();
+        
+        $dataProvider = new CArrayDataProvider($list, array('pagination'=>array('pageSize'=>20)));
+        
         $this->render('users', array(
+            'dataProvider'=>$dataProvider
         ));
     }
+
+    public function actionAddUser() {
+        $user = new User;
+        $this->render('userview', array(
+            'user' => $user,
+        ));
+    }
+
+    public function actionSaveUser() {
+        $attr = $_POST;
+
+        print_r($attr);
+    }
+
+    ////////////////////////////////////////////////////////////////////////
     
     public function actionClient() {
         $service = new ResourceService('resourceservice.local');
+        $list = $service->getApplicationList();
+
+        $dataProvider = new CArrayDataProvider($list, array('pagination'=>array('pageSize'=>20)));
 
         $this->render('apps', array(
+            'dataProvider'=>$dataProvider,
         ));
     }
     
@@ -137,7 +163,7 @@ class ManagerController extends CController
             $finder = FinderFactory::createFinderWithType('meta');
             $params['propertyList'] = $finder->findAll();
         }
-        
+
         $this->render($shema.'view', $params);
     }
     

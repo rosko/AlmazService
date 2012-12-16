@@ -8,21 +8,21 @@ include_once(dirname(__FILE__).'/../utils/Parameters.php');
 include_once(dirname(__FILE__).'/../utils/ObjectCodingFactory.php');
 include_once(dirname(__FILE__).'/APIResponseCode.php');
 
-include_once(dirname(__FILE__).'/../models/DataStorage/YiiResourceDataStorage.php');
-
 class ResourceController
 {
-    public function actionIndex() {
+    public function actionIndex()
+    {
     }
     
-    // 
-    // URL Format: api/<type>/<idid>.<format>
-    //
-    // type - Resource type
-    // id - Resource id
-    // format = Response format
-    //
-    public function actionView() {
+    /*
+     *  URL Format: api/<type>/<id>.<format>
+     *
+     *  $type   - Resource type
+     *  $id     - Resource id
+     *  $format - Response format
+     */
+    public function actionView()
+    {
         if (!Parameters::hasParam('type'))
             throw new APIException('Invalid resource TYPE (parameter name: \'type\')', APIResponseCode::API_INVALID_METHOD_PARAMS);
         
@@ -49,7 +49,8 @@ class ResourceController
     // type - Resource type
     // format = Response format
     //
-    public function actionList() {
+    public function actionList()
+    {
         if (!Parameters::hasParam('type'))
             throw new APIException('Invalid resource TYPE (parameter name: \'type\')', APIResponseCode::API_INVALID_METHOD_PARAMS);
         
@@ -57,8 +58,8 @@ class ResourceController
 //            throw new APIException('Invalid application DEVELOPER KEY (parameter name: \'devkey\')', APIResponseCode::API_INVALID_METHOD_PARAMS);
         
         $resource_type = Parameters::get('type');
-        $devkey = Parameters::get('devkey');
-
+//        $devkey = Parameters::get('devkey');
+        
         $finder = new YiiResourceFinder($resource_type);
 //        $finder->setDevKey($devkey);
         $result = $finder->findAll();
@@ -74,21 +75,12 @@ class ResourceController
             throw new APIException('Invalid Coder for format', APIResponseCode::API_INVALID_CODER);
             
         $response = $coder->encode($dataSet);
-        die($response);
-//
-//
-//
-//
-//        $format = Parameters::hasParam('format') ? Parameters::get('format') : 'json';
-//        $coder = ObjectCodingFactory::factory()->createObject($format);
-//        if ($coder === null)
-//            throw new APIException('Invalid Coder for format', APIResponseCode::API_INVALID_CODER);
-//
-//        $response = $coder->encode($result);
-//        echo $response;
+        
+        echo $response;
     }
     
-    public function actionUpdate() {
+    public function actionUpdate()
+    {
         if (!Parameters::hasParam('id'))
             throw new APIException('Invalid resource IDENTIFICATOR (parameter name: \'id\')', APIResponseCode::API_INVALID_METHOD_PARAMS);
         
@@ -109,7 +101,8 @@ class ResourceController
         }
     }
     
-    public function actionCreate() {
+    public function actionCreate()
+    {
         try
         {
             $obj = DataModelFactory::createDataObjectWithType('resource');
@@ -127,7 +120,8 @@ class ResourceController
         }
     }
     
-    public function actionDelete() {
+    public function actionDelete()
+    {
         if (!Parameters::hasParam('id'))
             throw new APIException('Invalid resource IDENTIFICATOR (parameter name: \'id\')', APIResponseCode::API_INVALID_METHOD_PARAMS);
         
@@ -145,7 +139,8 @@ class ResourceController
         }
     }
     
-    public function actionSearch() {
-        
+    public function actionSearch()
+    {
+        // Empty method
     }
 }

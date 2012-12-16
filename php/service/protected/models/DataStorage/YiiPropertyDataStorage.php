@@ -1,11 +1,12 @@
 <?php
 
-include_once(dirname(__FILE__).'/../../../../core/model/Property.php');
-include_once(dirname(__FILE__).'/../../../../core/model/DataStorage/AbstractDataStorage.php');
+include_once(__CORE_DIR__.'/model/Property.php');
+include_once(__CORE_DIR__.'/model/DataStorage/AbstractDataStorage.php');
 
 class YiiPropertyDataStorage implements AbstractDataStorage
 {
-    public function save($object) {
+    public function save($object)
+    {
         $model = MetaDataKey::model();
         $transaction = $model->getDbConnection()->beginTransaction();
         
@@ -32,11 +33,13 @@ class YiiPropertyDataStorage implements AbstractDataStorage
         }
     }
     
-    public function remove($object) {
+    public function remove($object)
+    {
         return MetaDataKey::model()->deleteByPk($object->id);
     }
     
-    public function decodeResponse($data) {
+    public function decodeResponse($data)
+    {
         $json = new CJSON();
         return $json->decode($data);
     }

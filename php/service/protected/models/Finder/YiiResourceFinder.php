@@ -33,9 +33,8 @@ class YiiResourceFinder extends YiiDataFinder
             $property[] = $prop->getAttributes();
         }
 
-
         $objects = array();
-
+        
         foreach ($record->objects as $object) {
             $objects[] = array(
                 'name' => $object->name,

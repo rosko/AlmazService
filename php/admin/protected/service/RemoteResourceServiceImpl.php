@@ -7,6 +7,7 @@ class RemoteResourceServiceImpl
 {
     const API_RESOURCE_BASE_URL = '/index.php/api/resource';
     const API_ENTITY_BASE_URL = '/index.php/api/service';
+    const API_USER_BASE_URL = '/index.php/api/users';
     
     const JSON_RESPONSE_FORMAT = 'json';
     const XML_RESPONSE_FORMAT = 'xml';
@@ -62,7 +63,7 @@ class RemoteResourceServiceImpl
     public function getEntityList($type) {
         $finder = FinderFactory::createFinderWithType($type);
         if ($finder === null)
-            throw Exception('Invalid type');
+            throw new Exception('Invalid type');
         
         $list = $finder->findAll();
         
@@ -136,15 +137,94 @@ class RemoteResourceServiceImpl
 
         return $req->perform();
     }
-    
+
+    /*
+     * Application API
+     */
+
+    public function getApplicationList()
+    {
+        //$url = $this->makeServiceURL(self::API_USER_BASE_URL, '/user');
+
+        $url = $this->service_url.'/index.php/api/apps/app.json'; // Debug
+
+        $req = new HttpRequest();
+        $req->setUrl($url);
+        $req->setMethod('GET');
+        $response = $req->perform();
+
+        $coder = new CJSON();
+        $items = $coder->decode($response);
+
+        return $items;
+    }
+
+    /*
+     * User API
+     */
+
+    public function getUserList() {
+        $url = $this->makeServiceURL(self::API_USER_BASE_URL, '/user');
+
+        $req = new HttpRequest();
+        $req->setUrl($url);
+        $req->setMethod('GET');
+        $response = $req->perform();
+
+        $coder = new CJSON();
+        $items = $coder->decode($response);
+        
+        return $items;
+    }
+
+    public function getUser($id) {
+        $url = $this->makeServiceURL(self::API_USER_BASE_URL, '/user/'.$id);
+
+        $req = new HttpRequest();
+        $req->setUrl($url);
+        $req->setMethod('GET');
+        return $req->perform();
+    }
+
+    public function saveUser($id, $user) {
+        $coder = new CJSON();
+        $data = $coder->encode($user);
+
+        $api = '/user';
+        if ($id != 0)
+            $api .= '/'.$id;
+        $url = $this->makeServiceURL(self::API_USER_BASE_URL, $api);
+
+        $req = new HttpRequest();
+        $req->setUrl($url);
+        $req->setMethod('POST');
+        return $req->perform();
+    }
+
+    public function removeUser($id) {
+        $url = $this->makeServiceURL(self::API_USER_BASE_URL, '/user/'.$id);
+
+        $req = new HttpRequest();
+        $req->setUrl($url);
+        $req->setMethod('DELETE');
+        return $req->perform();
+    }
+
     // ---------------------------------------------------------------------------
     //
     // Private functions
     //
     // ---------------------------------------------------------------------------
-    
+
+    private function makeServiceURL($base, $api = null) {
+        $url = $this->service_url . $base;
+        if (!is_null($api))
+            $url .= $api;
+        return ($url . '.' . $this->format);
+    }
+
     private function makeResourceApiUrl($api) {
-        return $this->service_url . RemoteResourceServiceImpl::API_RESOURCE_BASE_URL . $api . '.' . $this->format;
+        return $this->makeServiceURL(self::API_RESOURCE_BASE_URL, $api);
     }
 
     private function makeUploadApiUrl($api) {
@@ -152,6 +232,6 @@ class RemoteResourceServiceImpl
     }
     
     private function makeEntitiesApiUrl($api) {
-        return $this->service_url . RemoteResourceServiceImpl::API_ENTITY_BASE_URL . $api . '.' . $this->format;
+        return $this->makeServiceURL(self::API_ENTITY_BASE_URL, $api);
     }
 }

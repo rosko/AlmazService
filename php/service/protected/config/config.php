@@ -8,6 +8,10 @@ return array(
         'application.components.*',
     ),
     
+    'preload'=>array(
+        'log',
+    ),
+    
     'components'=>array(
         'db'=>array(
             'class'=>'CDbConnection',
@@ -15,6 +19,24 @@ return array(
             'username'=>'root',
             'password'=>'',
             'charset'=>'utf8',
+        ),
+
+        'log'=>array(
+            'class'=>'CLogRouter',
+            'routes'=>array(
+                array(
+                    'class'=>'CFileLogRoute',
+                    'levels'=>'trace, info, error',
+                    'categories'=>'application.*',
+                    'logFile'=>'service.log',
+                ),
+                array(
+                    'class'=>'CFileLogRoute',
+                    'levels'=>'trace, info',
+                    'categories'=>'system.*',
+                    'logFile'=>'system.log',
+                ),
+            ),
         ),
         
         'urlManager'=>array(
